@@ -22,6 +22,3 @@ Direct-contact ordering system. Catalog-first interface with minimal, clean desi
 
 Minimal UI informed by agricultural commerce best practices. Focus on product clarity and direct customer engagement without heavy animations or flashy elements.
 
----
-
-**Tech stack and feature details to be added.**
