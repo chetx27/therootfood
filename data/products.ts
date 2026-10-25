@@ -1,0 +1,11 @@
+import { Product } from "@/types/product";
+
+export const products: Product[] = [
+  { id: "ragi-flour", slug: "stone-ground-ragi-flour", name: "Stone-Ground Gluten-Free Ragi Flour", category: "flours-powders", priceType: "fixed", price: 249, unit: "per kg", imageSrc: "/products/ragi-flour.webp", imageAlt: "Stone-ground gluten-free ragi flour in a bowl", shortNote: "Stone-ground in small batches", whatsappTemplate: "Hi, I'd like to order Stone-Ground Gluten-Free Ragi Flour." },
+  { id: "vetiver-powder", slug: "vetiver-lavancha-powder", name: "Vetiver (Lavancha Roots) Powder", category: "roots-herbal", priceType: "fixed", price: 150, unit: "per 10g", imageSrc: "/products/vetiver-powder.webp", imageAlt: "Vetiver root powder", whatsappTemplate: "Hi, I'd like to order Vetiver (Lavancha Roots) Powder." },
+  { id: "vetiver-roots", slug: "vetiver-lavancha-roots", name: "Vetiver Roots (Lavancha Roots)", category: "roots-herbal", priceType: "fixed", price: 145, unit: "per 10g", imageSrc: "/products/vetiver-roots.webp", imageAlt: "Dried vetiver roots", whatsappTemplate: "Hi, I'd like to order Vetiver Roots (Lavancha Roots)." },
+  { id: "country-eggs", slug: "free-range-country-eggs", name: "Free-Range Healthy Country Eggs", category: "eggs-dairy", priceType: "fixed", price: 309, unit: "for 12 eggs", imageSrc: "/products/country-eggs.webp", imageAlt: "Free-range country eggs in a tray", whatsappTemplate: "Hi, I'd like to order a tray of Free-Range Country Eggs (12 eggs)." },
+  { id: "goat-meat", slug: "goat-meat", name: "Goat Meat", category: "meat-poultry", priceType: "fixed", price: 789, unit: "per kg", imageSrc: "/products/goat-meat.webp", imageAlt: "Fresh goat meat", whatsappTemplate: "Hi, I'd like to order Goat Meat." },
+  { id: "country-chicken", slug: "country-chicken", name: "Country Chicken", category: "meat-poultry", priceType: "enquiry", imageSrc: "/products/country-chicken.webp", imageAlt: "Country chicken", whatsappTemplate: "Hi, I'd like to enquire about the price of Country Chicken." },
+  { id: "goat-milk-soap", slug: "pure-goat-milk-soap", name: "Pure Goat Milk Soap 100g", category: "wellness", priceType: "fixed", price: 150, unit: "per 100g bar", imageSrc: "/products/goat-milk-soap.webp", imageAlt: "Bar of pure goat milk soap", whatsappTemplate: "Hi, I'd like to order Pure Goat Milk Soap (100g)." },
+];
