@@ -1,36 +1,142 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TheRootFood Website
+
+Farm-direct products e-commerce website built with Next.js (App Router) + TypeScript.
+
+## Stack
+
+| Layer      | Technology                         |
+| ---------- | ---------------------------------- |
+| Framework  | Next.js 16 (App Router)            |
+| Language   | TypeScript                         |
+| Styling    | Tailwind CSS v4                    |
+| Forms      | React Hook Form + Zod validation   |
+| Email      | Resend                             |
+| Rate Limit | Upstash Redis + @upstash/ratelimit |
+| Animations | Framer Motion                      |
+| Components | shadcn/ui                          |
 
 ## Getting Started
 
-First, run the development server:
+### 1. Environment Variables
+
+Copy the example env file and fill in your values:
+
+```bash
+cp .env.example .env.local
+```
+
+Required variables:
+
+| Variable                      | Description                                            |
+| ----------------------------- | ------------------------------------------------------ |
+| `RESEND_API_KEY`              | Resend API key for sending emails                      |
+| `CONTACT_NOTIFICATION_EMAIL`  | Email address to receive enquiry notifications         |
+| `UPSTASH_REDIS_REST_URL`      | Upstash Redis URL for rate limiting                    |
+| `UPSTASH_REDIS_REST_TOKEN`    | Upstash Redis token                                    |
+| `NEXT_PUBLIC_WHATSAPP_NUMBER` | Business WhatsApp number (digits only, no + or spaces) |
+| `NEXT_PUBLIC_SITE_URL`        | Production URL e.g. `https://therootfood.com`          |
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Run Dev Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4. Build for Production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm run start
+```
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+therootfood/
+├── app/
+│   ├── api/
+│   │   ├── contact/route.ts     # Enquiry email endpoint (rate-limited, validated)
+│   │   └── health/route.ts      # Health check endpoint
+│   ├── about/page.tsx           # About page
+│   ├── faq/page.tsx             # FAQ page
+│   ├── privacy/page.tsx         # Privacy policy
+│   ├── terms/page.tsx           # Terms of service
+│   ├── error.tsx                # Global error boundary
+│   ├── not-found.tsx            # 404 page
+│   ├── loading.tsx              # Global loading state
+│   ├── layout.tsx               # Root layout with JSON-LD
+│   ├── page.tsx                 # Home page
+│   ├── sitemap.ts               # XML sitemap
+│   └── robots.ts                # robots.txt
+├── components/
+│   ├── layout/
+│   │   ├── navbar.tsx
+│   │   ├── footer.tsx
+│   │   ├── mobile-nav-drawer.tsx
+│   │   └── floating-whatsapp-button.tsx
+│   ├── sections/
+│   │   ├── hero.tsx
+│   │   ├── trust-strip.tsx
+│   │   ├── product-grid.tsx
+│   │   ├── product-card.tsx
+│   │   ├── cake-enquiry-section.tsx
+│   │   ├── bulk-enquiry-section.tsx
+│   │   └── contact-section.tsx
+│   └── shared/
+│       ├── fade-in.tsx
+│       └── section-heading.tsx
+├── data/
+│   └── products.ts              # Product catalogue
+├── lib/
+│   ├── business-info.ts         # Business metadata for JSON-LD
+│   ├── email.ts                 # Resend email helper
+│   ├── env.ts                   # Zod env validation
+│   ├── rate-limit.ts            # Upstash rate limiter
+│   ├── utils.ts                 # Utility functions
+│   ├── validations.ts           # Zod form schemas
+│   └── whatsapp.ts              # WhatsApp link builder
+├── public/
+│   ├── products/                # Product images
+│   ├── hero.png                 # Hero image
+│   ├── og-image.png             # OpenGraph image
+│   └── favicon/                 # Favicon set
+├── middleware.ts                # CSP headers + security headers
+└── next.config.ts               # Next.js config
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Commerce & App Features
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **WhatsApp ordering**: Add products to a basket and send them as one enquiry or item-by-item on WhatsApp — no online payment
+- **Chatbot**: Built-in knowledge-base assistant (products, delivery, payments) with WhatsApp handoff
+- **Mobile apps**: Capacitor iOS/Android shells around the live site — see `APP.md`
 
-## Deploy on Vercel
+## Security Features
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Rate limiting**: Per-IP, 5 requests/10 min on the contact API
+- **Honeypot + time-trap**: Double anti-bot protection on all forms
+- **CSP**: Strict Content Security Policy via middleware
+- **Zod validation**: All form submissions validated server-side
+- **Origin check**: API rejects requests from unexpected origins in production
+- **No PII in logs**: Contact details not logged on the server
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deployment
+
+Deploy to Vercel (recommended):
+
+```bash
+vercel --prod
+```
+
+Ensure all environment variables are set in your Vercel project dashboard before deploying.
+
+## CI/CD
+
+GitHub Actions runs lint and build checks on every push. See `.github/workflows/ci.yml`.
