@@ -5,36 +5,34 @@ import Link from "next/link";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { products } from "@/data/products";
+import { formatMoney, type CurrencyOption } from "@/lib/currency";
+import { useCurrency } from "@/lib/use-currency";
 import { cn } from "@/lib/utils";
 
-/** Editorial one-liners for the showcase; images, names, and prices come from the product listing. */
+/** One-liners for the showcase; images, names, and prices come from the product listing. */
 const stories: Record<string, string> = {
   "ragi-flour":
-    "Traditional stone-ground finger millet flour. 100% gluten free, rich in calcium and iron — the way your grandmother made it.",
+    "Finger millet ground slowly on stone. Naturally gluten free, with plenty of calcium and iron. Good for rotis, dosas and porridge.",
   "vetiver-powder":
-    "Finely ground vetiver root powder — used in cooling drinks, skincare, and Ayurvedic wellness rituals for centuries.",
+    "Vetiver root, dried and ground fine. People stir it into cooling summer drinks and mix it into face packs and bath powders.",
   "vetiver-roots":
-    "Whole dried vetiver roots — naturally fragrant, used in sherbets, water purification, and traditional home remedies.",
+    "Whole dried vetiver roots with a clean, earthy smell. Drop a bundle into your drinking water pot or use them for sherbet.",
   "country-eggs":
-    "From happy, freely roaming country hens. Richer yolks, higher nutrition, and a taste you can't fake.",
+    "Laid by country hens that roam the farm all day. The yolks are a deeper colour and they taste the way eggs should.",
   "goat-meat":
-    "Lean, tender, and naturally raised on open pasture. No hormones, no antibiotics — just clean, wholesome protein.",
+    "Raised on open pasture with no hormones and no antibiotics. Cut fresh on the day we deliver, in the cut you ask for.",
   "country-chicken":
-    "Slow-grown country chicken with deep flavour and firmer texture — a world apart from broiler meat.",
-  "baked-cakes":
-    "Handmade, small-batch cakes baked with wholesome ingredients. Available eggless or with our free-range country eggs.",
-  "tea-cakes":
-    "Light, fluffy tea cakes baked to pair perfectly with your evening chai. Made fresh with simple, clean ingredients.",
+    "Slow grown country chicken. The meat is firmer and has far more flavour than a broiler.",
   "goat-milk-soap":
-    "Handcrafted cold-process soaps made with fresh goat milk. Gentle, moisturising, and free from harsh chemicals.",
+    "Cold process soap made by hand with fresh goat milk. Gentle on skin, with no harsh chemicals.",
 };
 
-function priceLabel(product: (typeof products)[number]): string {
+function priceLabel(product: (typeof products)[number], currency: CurrencyOption): string {
   if (product.priceType === "fixed" && product.price) {
-    return `₹${product.price} ${product.unit ?? ""}`.trim();
+    return `${formatMoney(product.price, currency)} ${product.unit ?? ""}`.trim();
   }
   if (product.priceType === "custom-form") return "Custom pricing";
-  return "Price on enquiry";
+  return "Price on request";
 }
 
 const AUTOPLAY_MS = 5000;
@@ -43,6 +41,7 @@ export function ProductSliderSection() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const touchStartX = useRef<number | null>(null);
+  const { currency } = useCurrency();
   const count = products.length;
 
   const go = useCallback((delta: number) => setActiveSlide((c) => (c + delta + count) % count), [count]);
@@ -81,7 +80,7 @@ export function ProductSliderSection() {
             Straight from <span className="highlight-block">the farm</span>
           </h2>
           <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-white/70">
-            Every product below is grown, ground, raised, or baked by us — swipe through the harvest.
+            Grown, ground and raised on the farm. Swipe through what we have right now.
           </p>
         </div>
 
@@ -141,7 +140,7 @@ export function ProductSliderSection() {
                     )}
                   >
                     <span className="inline-flex self-start rounded-full border border-primary/40 bg-primary/20 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-primary sm:px-4 sm:py-1.5 sm:text-xs">
-                      {priceLabel(product)}
+                      {priceLabel(product, currency)}
                     </span>
                     <h3 className="font-heading text-2xl font-semibold leading-[1.1] tracking-tight text-white sm:text-4xl">
                       {product.name}

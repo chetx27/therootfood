@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { blurPlaceholders } from "@/lib/blur-placeholders";
 import { useCart } from "@/lib/cart-context";
 import { useAnalytics } from "@/lib/analytics";
-import { type CurrencyOption, formatMoney } from "@/lib/currency";
+import { type CurrencyOption, formatInr, formatMoney } from "@/lib/currency";
 import { WhatsAppLogo } from "@/components/ui/whatsapp-logo";
 
 export const categoryLabels: Record<ProductCategory, string> = {
@@ -93,12 +93,15 @@ export function ProductCard({ product, currency }: ProductCardProps) {
             </>
           ) : (
             <span className="text-sm font-semibold text-amber-700">
-              {isCake ? "Made to order · from your design" : "Price on request · varies by season"}
+              {isCake ? "Made to order from your design" : "Price on request"}
             </span>
           )}
         </div>
         {isFixed && currency.code !== "INR" && (
-          <p className="mt-0.5 text-xs text-slate-400">≈ ₹{product.price} · final amount confirmed in INR</p>
+          <p className="mt-0.5 text-xs text-slate-400">≈ {formatInr(product.price!)}</p>
+        )}
+        {!isFixed && !isCake && (
+          <p className="mt-0.5 text-xs text-slate-400">Add it to your basket and we&apos;ll quote you on WhatsApp.</p>
         )}
 
         <div className="mt-auto pt-5">

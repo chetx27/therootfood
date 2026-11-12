@@ -6,7 +6,7 @@ import { Footer } from "@/components/layout/footer";
 
 export const metadata = {
   title: "About Us | TheRootFood",
-  description: "Learn about TheRootFood's mission to bring authentic, farm-direct produce to your kitchen.",
+  description: "Who we are, what we grow and why we sell it straight to your kitchen.",
 };
 
 export default function AboutPage() {
@@ -19,7 +19,7 @@ export default function AboutPage() {
             <div className="relative h-40 w-40 sm:h-48 sm:w-48 md:h-56 md:w-56">
               <Image
                 src="/rootfood-logo-full.webp"
-                alt="TheRootFood — Direct from farm | Bakehouse"
+                alt="TheRootFood logo: direct from farm, bakehouse"
                 fill
                 className="object-contain"
                 sizes="224px"
@@ -34,17 +34,17 @@ export default function AboutPage() {
           </div>
         </FadeIn>
 
-        <div className="prose prose-invert prose-lg max-w-none">
+        <div className="text-base leading-relaxed sm:text-lg">
           <FadeIn delay={0.1}>
-            <p>
-              TheRootFood was born out of a simple belief: everyone deserves access to pure, unadulterated,
-              and nutrient-rich food. We are a farm-direct business bridging the gap between traditional
-              farming practices and modern households.
+            <p className="mb-5">
+              TheRootFood began with a simple belief: everyone should be able to buy pure, unadulterated
+              food. We are based in Bangalore and sell what we grow straight to the people who cook with
+              it.
             </p>
             <p>
-              We specialize in stone-ground flours, herbal roots, free-range country eggs, fresh goat meat,
-              and artisanal baked goods. By bypassing middlemen, we ensure that farmers get a fair price and
-              you get the freshest produce possible.
+              That means stone-ground flours, herbal roots, free-range country eggs, fresh goat meat and
+              cakes from our bakery, Nitara&apos;s Fine Bakes. There are no middlemen, so the farmers get a
+              fair price and the food reaches you fresh.
             </p>
           </FadeIn>
 
@@ -52,21 +52,21 @@ export default function AboutPage() {
             <h2 className="text-3xl font-heading font-semibold tracking-tight mt-12 mb-6">Our Promise</h2>
             <div className="grid md:grid-cols-3 gap-8 mt-8">
               <div className="surface-scope bg-surface text-surface-foreground p-6 rounded-2xl">
-                <h3 className="font-bold mb-2 mt-0 text-surface-foreground">100% Authentic</h3>
+                <h3 className="font-bold mb-2 mt-0 text-surface-foreground">Nothing added</h3>
                 <p className="text-base text-muted-foreground m-0">
-                  No artificial preservatives, colors, or hidden additives. Just pure food.
+                  No artificial preservatives, colours or hidden additives.
                 </p>
               </div>
               <div className="surface-scope bg-surface text-surface-foreground p-6 rounded-2xl">
                 <h3 className="font-bold mb-2 mt-0 text-surface-foreground">Farm Direct</h3>
                 <p className="text-base text-muted-foreground m-0">
-                  Sourced directly from our farms and trusted local partners.
+                  From our own farm and local partner farms we know personally.
                 </p>
               </div>
               <div className="surface-scope bg-surface text-surface-foreground p-6 rounded-2xl">
                 <h3 className="font-bold mb-2 mt-0 text-surface-foreground">Sustainable</h3>
                 <p className="text-base text-muted-foreground m-0">
-                  We prioritize environmentally friendly farming and packaging practices.
+                  We farm and pack in ways that are easy on the land.
                 </p>
               </div>
             </div>

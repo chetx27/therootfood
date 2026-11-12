@@ -34,7 +34,7 @@ export default function FAQPage() {
               Questions? <span className="italic text-primary">We&apos;ve got answers.</span>
             </>
           }
-          description="Everything about ordering on WhatsApp, delivery, payment, freshness and cakes — in plain words."
+          description="Ordering on WhatsApp, delivery, payment, freshness and cakes, explained in plain words."
         />
         <FaqExplorer />
         <HelpCta secondary={{ href: "/contact", label: "Other ways to reach us" }} />

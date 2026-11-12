@@ -2,11 +2,11 @@ export const bakery = {
   name: "Nitara's Fine Bakes",
   tagline: "Homemade · Fresh · With love",
   promise: "Small batches, big dreams",
-  phone: "8056950470",
+  phone: "+916379805442",
+  phoneDisplay: "+91 63798 05442",
   whatsapp: "916379805442",
-  whatsappDisplay: "63798 05442",
-  instagramHandle: "nitara_fine_bakes_bangalore",
-  instagramUrl: "https://www.instagram.com/nitara_fine_bakes_bangalore/",
+  instagramHandle: "nitaras_fine_bakes_bangalore",
+  instagramUrl: "https://www.instagram.com/nitaras_fine_bakes_bangalore/",
   location: "JP Nagar, Bangalore",
 };
 
@@ -27,7 +27,7 @@ export const cakeMenu: CakeCategory[] = [
   {
     id: "classic",
     title: "Pastry Cakes",
-    tagline: "Timeless favourites, layered with fresh cream.",
+    tagline: "The classics, layered with fresh cream.",
     image: "/bakery/cake-fruit.webp",
     items: [
       { name: "Blackforest", price: 750 },
@@ -51,7 +51,7 @@ export const cakeMenu: CakeCategory[] = [
   {
     id: "exotic",
     title: "Exotic Flavours",
-    tagline: "Indian sweets, reimagined as cake.",
+    tagline: "Your favourite Indian sweets, baked into a cake.",
     image: "/bakery/cake-exotic.webp",
     items: [
       { name: "Rasmalai", price: 1350 },
@@ -67,7 +67,7 @@ export const cakeMenu: CakeCategory[] = [
   {
     id: "chocolate",
     title: "Chocolate Pastry",
-    tagline: "Deep, dark and seriously indulgent.",
+    tagline: "For when it has to be chocolate.",
     image: "/bakery/cake-chocolate.webp",
     items: [
       { name: "Chocolate truffle", price: 1050 },
@@ -98,14 +98,14 @@ const sizes = (a: number, b: number, c: number) => [
 ];
 
 export const brownies: BrownieItem[] = [
-  { name: "Classic Brownie", description: "Rich chocolate. Soft centre. Pure happiness.", image: "/bakery/brownie-classic.webp", prices: sizes(300, 550, 1050) },
-  { name: "Nuts Brownie", description: "Loaded with crunchy nuts. A wholesome treat.", image: "/bakery/brownie-nuts.webp", prices: sizes(360, 650, 1250) },
-  { name: "Choco Chips Brownie", description: "More chips. More smiles.", image: "/bakery/brownie-choco-chips.webp", prices: sizes(340, 620, 1200) },
-  { name: "Lotus Biscoff Brownie", description: "Biscoff crumbs. Caramel notes. Absolute heaven.", image: "/bakery/brownie-lotus-biscoff.webp", prices: sizes(380, 700, 1350) },
-  { name: "Nutella Brownie", description: "Creamy Nutella. Fudgy bliss.", image: "/bakery/brownie-nutella.webp", prices: sizes(380, 700, 1350) },
-  { name: "Double Chocolate Brownie", description: "Two kinds of chocolate. Twice the love.", image: "/bakery/brownie-double-chocolate.webp", prices: sizes(360, 650, 1250) },
-  { name: "Triple Chocolate Brownie", description: "Dark. Milk. White. The ultimate indulgence.", image: "/bakery/brownie-triple-chocolate.webp", prices: sizes(400, 750, 1450) },
-  { name: "Nuts & Choco Chips Brownie", description: "The best of both worlds.", image: "/bakery/brownie-nuts-choco-chips.webp", prices: sizes(380, 700, 1350) },
+  { name: "Classic Brownie", description: "Plain chocolate, soft and fudgy in the middle.", image: "/bakery/brownie-classic.webp", prices: sizes(300, 550, 1050) },
+  { name: "Nuts Brownie", description: "The classic, loaded with crunchy nuts.", image: "/bakery/brownie-nuts.webp", prices: sizes(360, 650, 1250) },
+  { name: "Choco Chips Brownie", description: "Chocolate chips in every bite.", image: "/bakery/brownie-choco-chips.webp", prices: sizes(340, 620, 1200) },
+  { name: "Lotus Biscoff Brownie", description: "Biscoff crumbs and caramel on a fudgy base.", image: "/bakery/brownie-lotus-biscoff.webp", prices: sizes(380, 700, 1350) },
+  { name: "Nutella Brownie", description: "Creamy Nutella on a fudgy brownie.", image: "/bakery/brownie-nutella.webp", prices: sizes(380, 700, 1350) },
+  { name: "Double Chocolate Brownie", description: "Two kinds of chocolate in one brownie.", image: "/bakery/brownie-double-chocolate.webp", prices: sizes(360, 650, 1250) },
+  { name: "Triple Chocolate Brownie", description: "Dark, milk and white chocolate together.", image: "/bakery/brownie-triple-chocolate.webp", prices: sizes(400, 750, 1450) },
+  { name: "Nuts & Choco Chips Brownie", description: "Crunchy nuts and chocolate chips, both.", image: "/bakery/brownie-nuts-choco-chips.webp", prices: sizes(380, 700, 1350) },
 ];
 
 export const brownieTub = {
@@ -153,11 +153,11 @@ export const signatureBakes = [
 ];
 
 export const occasions = [
-  { id: "birthday", phrase: "a birthday", title: "Birthdays", line: "Make a wish worth remembering.", body: "Names, numbers, themes — a cake that looks like the party feels.", image: "/bakery/cake-celebration.webp", picks: ["Red velvet", "Chocolate KitKat", "Birthday decorated brownies"] },
-  { id: "anniversary", phrase: "an anniversary", title: "Anniversaries", line: "Sweet, like the years together.", body: "Elegant, understated cakes for the moments that matter most.", image: "/bakery/cake-fruit.webp", picks: ["Blueberry", "White chocolate truffle", "Ferrero Rocher"] },
-  { id: "party", phrase: "a party", title: "Parties", line: "Enough to go around. Twice.", body: "Brownie tubs and big cakes made to feed a happy crowd.", image: "/bakery/brownie-tub.webp", picks: ["Brownie Tub", "Death by chocolate", "Triple Chocolate Brownie"] },
-  { id: "gifting", phrase: "a gift", title: "Gifting", line: "Better than flowers.", body: "Hand-packed brownie boxes, tied up and ready to give.", image: "/bakery/brownie-box.webp", picks: ["Brownie Box", "Lotus Biscoff Brownie", "Nutella Brownie"] },
-  { id: "festival", phrase: "a festival", title: "Festivals", line: "Mithai, meet cake.", body: "Indian sweets reimagined — the dessert table's new favourite.", image: "/bakery/cake-exotic.webp", picks: ["Rasmalai", "Kaju katli", "Motichoor laddu"] },
-  { id: "office", phrase: "an office treat", title: "Office treats", line: "Instant team morale.", body: "Bulk brownies for birthdays, wins and Friday afternoons.", image: "/bakery/brownie-nuts-choco-chips.webp", picks: ["Classic Brownie", "Nuts & Choco Chips Brownie", "Choco Chips Brownie"] },
+  { id: "birthday", phrase: "a birthday", title: "Birthdays", line: "Make a wish.", body: "Tell us the name, the age and the theme, and we'll put it on the cake.", image: "/bakery/cake-celebration.webp", picks: ["Red velvet", "Chocolate KitKat", "Birthday decorated brownies"] },
+  { id: "anniversary", phrase: "an anniversary", title: "Anniversaries", line: "Sweet, like the years together.", body: "Simple, pretty cakes for a dinner for two or the whole family.", image: "/bakery/cake-fruit.webp", picks: ["Blueberry", "White chocolate truffle", "Ferrero Rocher"] },
+  { id: "party", phrase: "a party", title: "Parties", line: "Enough to go around. Twice.", body: "Brownie tubs and big cakes that feed a crowd.", image: "/bakery/brownie-tub.webp", picks: ["Brownie Tub", "Death by chocolate", "Triple Chocolate Brownie"] },
+  { id: "gifting", phrase: "a gift", title: "Gifting", line: "Better than flowers.", body: "Brownie boxes packed by hand and ready to give.", image: "/bakery/brownie-box.webp", picks: ["Brownie Box", "Lotus Biscoff Brownie", "Nutella Brownie"] },
+  { id: "festival", phrase: "a festival", title: "Festivals", line: "Mithai, meet cake.", body: "Rasmalai, kaju katli and motichoor laddu, baked into cakes.", image: "/bakery/cake-exotic.webp", picks: ["Rasmalai", "Kaju katli", "Motichoor laddu"] },
+  { id: "office", phrase: "an office treat", title: "Office treats", line: "The whole team will thank you.", body: "Brownies in bulk for birthdays, wins and Friday afternoons.", image: "/bakery/brownie-nuts-choco-chips.webp", picks: ["Classic Brownie", "Nuts & Choco Chips Brownie", "Choco Chips Brownie"] },
 ];
 

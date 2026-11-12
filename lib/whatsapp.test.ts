@@ -6,6 +6,7 @@ import {
   cakeEnquiryMessage,
   defaultEnquiryMessage,
 } from "@/lib/whatsapp";
+import { formatAmount, getCurrency, lineTotal } from "@/lib/currency";
 
 describe("buildWhatsAppLink", () => {
   it("produces a valid wa.me URL with encoded message", () => {
@@ -31,9 +32,23 @@ describe("message builders", () => {
       { name: "Ragi Flour", quantity: 2, unit: "per kg", price: 249 },
       { name: "Tea Cakes", quantity: 1 },
     ]);
-    expect(msg).toContain("1. Ragi Flour — 2 × (kg)");
-    expect(msg).toContain("2. Tea Cakes — 1");
+    expect(msg).toContain("1. Ragi Flour: 2 × (kg)");
+    expect(msg).toContain("2. Tea Cakes: 1");
     expect(msg).toContain("₹498");
+  });
+
+  it("basketEnquiryMessage asks to pay in the shopper's currency and keeps the rupee amount", () => {
+    const usd = getCurrency("USD");
+    const msg = basketEnquiryMessage(
+      [
+        { name: "Ragi Flour", quantity: 2, unit: "per kg", price: 249 },
+        { name: "Goat Milk Soap", quantity: 1, unit: "per 100g", price: 150 },
+      ],
+      usd
+    );
+    expect(msg).toContain(formatAmount(lineTotal(249, 2, usd) + lineTotal(150, 1, usd), usd));
+    expect(msg).toContain("(around ₹648)");
+    expect(msg).toContain("I'd like to pay in USD");
   });
 
   it("cakeEnquiryMessage includes all details", () => {

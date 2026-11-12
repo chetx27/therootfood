@@ -7,7 +7,7 @@ import { HowToOrderBakes, InstagramWall, SignatureBakes } from "@/components/bak
 import { Occasions } from "@/components/bakery/occasions";
 
 export const metadata = {
-  title: "Nitara's Fine Bakes — Cakes & Brownies | TheRootFood",
+  title: "Nitara's Fine Bakes: Cakes & Brownies | TheRootFood",
   description:
     "Celebration cakes, exotic-flavour cakes, fudgy brownies, brownie boxes and custom bakes from Nitara's Fine Bakes, JP Nagar, Bangalore. Order on WhatsApp.",
   alternates: { canonical: "/cakes" },

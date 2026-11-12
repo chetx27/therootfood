@@ -10,7 +10,7 @@ import { FadeIn } from "@/components/shared/fade-in";
 import { generalEnquirySchema, GeneralEnquiryFormValues } from "@/lib/validations";
 import { useAnalytics } from "@/lib/analytics";
 import { buildWhatsAppLink, defaultEnquiryMessage } from "@/lib/whatsapp";
-import { businessInfo } from "@/lib/business-info";
+import { businessInfo, farmPhoneDisplay } from "@/lib/business-info";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ import { Textarea } from "@/components/ui/textarea";
 const quickLinks = [
   {
     label: "Call us",
-    value: "+91 76194 36055",
+    value: farmPhoneDisplay,
     href: `tel:${businessInfo.phone}`,
     icon: Phone,
     hint: "Tap to dial",
@@ -109,7 +109,7 @@ export function ContactSection({ compact = false }: { compact?: boolean }) {
             <span className="highlight-block mt-3 inline-block">touch</span>
           </h2>
           <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-slate-600">
-            Talk to a real person from the farm — WhatsApp is fastest, or leave a note below.
+            Talk to a real person from the farm. WhatsApp is fastest, or leave a note below.
           </p>
         </FadeIn>
         )}
@@ -166,7 +166,7 @@ export function ContactSection({ compact = false }: { compact?: boolean }) {
                 </li>
                 <li className="flex gap-2">
                   <span className="text-forest">●</span>
-                  Perishables — contact us immediately if anything arrives off
+                  If anything fresh arrives off, tell us straight away
                 </li>
                 <li className="flex gap-2">
                   <span className="text-forest">●</span>

@@ -26,7 +26,7 @@ export default function GlobalError({
           We&apos;re tending <span className="highlight-block">the soil</span>
         </>
       }
-      description="Something went wrong on our side, or the site is briefly down for maintenance. Give it a moment and try again — you can still order on WhatsApp in the meantime."
+      description="Something went wrong on our side, or the site is briefly down for maintenance. Give it a moment and try again. You can still order on WhatsApp in the meantime."
       actions={
         <>
           <button type="button" onClick={reset} className={statusPrimaryClass}>

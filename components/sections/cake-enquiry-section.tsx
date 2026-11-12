@@ -60,8 +60,8 @@ export function CakeEnquirySection() {
             Make it <span className="italic text-[#e8b4c8]">your way.</span>
           </h2>
           <p className="mx-auto mt-5 max-w-xl text-white/70">
-            Dreaming of something that isn&apos;t on the menu? Describe it in your own words — the theme, the occasion,
-            the feeling — and Nitara&apos;s team will bake it for you.
+            Want something that isn&apos;t on the menu? Tell us the occasion, the theme and how many people it&apos;s
+            for, and Nitara&apos;s team will bake it for you.
           </p>
         </FadeIn>
 

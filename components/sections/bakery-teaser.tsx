@@ -40,7 +40,7 @@ export function BakeryTeaser() {
             </h2>
             <p className="mt-5 max-w-md leading-relaxed text-slate-600">
               The sweet side of TheRootFood. Celebration cakes in classic, exotic and chocolate flavours, fudgy brownies,
-              brownie boxes and fully custom designs — homemade in small batches with our farm-fresh eggs.
+              brownie boxes and custom designs. Everything is homemade in small batches with eggs from our farm.
             </p>
 
             <dl className="mt-8 grid max-w-md grid-cols-3 divide-x divide-[#e8b4c8]/60 border-y border-[#e8b4c8]/60">

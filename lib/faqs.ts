@@ -20,7 +20,7 @@ export const faqs: Faq[] = [
     category: "ordering",
     question: "How do I place an order?",
     answer:
-      "Open the Order page, tap \"Add to basket\" on what you'd like, then open your basket and tap \"Enquire on WhatsApp\". Your list arrives in our chat, we confirm stock, delivery and the final total, and you're done. No sign-up, no card details.",
+      "Open the Order page, tap \"Add to basket\" on what you'd like, then open your basket and tap \"Enquire on WhatsApp\". Your list lands in our chat, we confirm stock, delivery and the final total, and that's it. No sign-up, no card details.",
   },
   {
     category: "ordering",
@@ -32,7 +32,7 @@ export const faqs: Faq[] = [
     category: "ordering",
     question: "Is there a minimum order?",
     answer:
-      "No strict minimum — even a single item is fine. For deliveries further away, combining a few items keeps the delivery charge worthwhile.",
+      "No. Even a single item is fine. If you live further away, ordering a few things together makes the delivery charge worth it.",
   },
   {
     category: "ordering",
@@ -44,19 +44,19 @@ export const faqs: Faq[] = [
     category: "delivery",
     question: "Do you deliver outside Bangalore?",
     answer:
-      "Fresh items — eggs, meat and cakes — are delivered within Bangalore so they reach you at their best. Ragi flour, vetiver roots and powder, and goat milk soap ship across India and internationally.",
+      "Eggs, meat and cakes are delivered only within Bangalore so they reach you fresh. Ragi flour, vetiver roots and powder, and goat milk soap ship across India and abroad.",
   },
   {
     category: "delivery",
     question: "How long does delivery take?",
     answer:
-      "Within Bangalore, usually within 24 hours — often the same day if you order early. Courier orders across India take a few days, and international orders take 7–21 business days.",
+      "Within Bangalore, usually within 24 hours, and often the same day if you order early. Courier orders across India take a few days. International orders take 7 to 21 business days.",
   },
   {
     category: "delivery",
     question: "How much is delivery?",
     answer:
-      "It depends on your location and order size, so we tell you the exact charge on WhatsApp before you pay. Larger local orders often qualify for free delivery — just ask.",
+      "It depends on where you are and how big the order is, so we tell you the exact charge on WhatsApp before you pay. Larger local orders often get free delivery. Just ask.",
   },
   {
     category: "delivery",
@@ -77,9 +77,9 @@ export const faqs: Faq[] = [
   },
   {
     category: "payment",
-    question: "Why are prices shown in other currencies?",
+    question: "Can I order and pay in my own currency?",
     answer:
-      "International customers can preview approximate prices in USD, EUR, GBP or AED. The final amount is always confirmed in Indian rupees on WhatsApp.",
+      "Yes. On the Order page, switch the prices to USD, EUR, GBP or AED. Your basket and the order you send us stay in that currency, with the rupee amount shown small beside it. The rates on the site are approximate, so we confirm the exact amount on WhatsApp before you pay.",
   },
   {
     category: "products",
@@ -95,37 +95,37 @@ export const faqs: Faq[] = [
   },
   {
     category: "products",
-    question: "Why is country chicken \"price on request\"?",
+    question: "Why are goat meat and country chicken \"price on request\"?",
     answer:
-      "Country chickens are slow-grown and vary in size each week, so we quote the price for the bird you'll actually get.",
+      "Fresh meat doesn't have one fixed price with us. Country chickens are slow grown and vary in size each week, and goat meat depends on the cut you want. Add it to your basket or tap the WhatsApp button and we'll quote you before you confirm.",
   },
   {
     category: "products",
     question: "What if something arrives damaged or not fresh?",
     answer:
-      "Send us a photo on WhatsApp straight away and we'll replace it or refund you — no fuss. Because products are perishable we can't accept returns otherwise.",
+      "Send us a photo on WhatsApp straight away and we'll replace it or refund you. Because the products are perishable we can't accept returns otherwise.",
   },
   {
     category: "cakes",
     question: "How do I order a custom cake?",
     answer:
-      "Open the Cakes page, choose eggless or with egg, pick a size and flavour, add your date and any notes, and tap send. Your cake details arrive on our WhatsApp and we reply with the price.",
+      "Open the Cakes & Bakes page and scroll to \"Make it your way\". Describe the cake you have in mind, add your name and tap \"Send my note\". It lands on Nitara's WhatsApp and she replies with the price.",
   },
   {
     category: "cakes",
     question: "How much notice do you need?",
-    answer: "At least 3 days for custom cakes and designs, so Nitara's Fine Bakes can make it perfect.",
+    answer: "At least 3 days for custom cakes and designs, so Nitara's Fine Bakes has time to get it right.",
   },
   {
     category: "cakes",
     question: "Do you make eggless cakes?",
-    answer: "Yes — every flavour can be made eggless or with our own free-range farm eggs.",
+    answer: "Yes. Every flavour can be made eggless for ₹150 extra, or with eggs from our own farm.",
   },
   {
     category: "cakes",
     question: "What sizes and flavours are available?",
     answer:
-      "0.5 kg (serves 2–4), 1 kg, 1.5 kg and 2 kg (serves 14–16). Popular flavours are chocolate truffle, red velvet, vanilla bean, butterscotch, black forest and pineapple — or tell us your own idea.",
+      "0.5 kg (serves 2 to 4), 1 kg, 1.5 kg and 2 kg (serves 14 to 16). Popular flavours are chocolate truffle, red velvet, vanilla, butterscotch, black forest and pineapple. You can also tell us your own idea.",
   },
   {
     category: "bulk",
@@ -136,7 +136,7 @@ export const faqs: Faq[] = [
   {
     category: "bulk",
     question: "Do you offer wholesale pricing?",
-    answer: "Yes — bulk and repeat orders get wholesale rates based on volume and frequency.",
+    answer: "Yes. Bulk and repeat orders get wholesale rates based on how much you buy and how often.",
   },
   {
     category: "bulk",

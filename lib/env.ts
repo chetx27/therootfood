@@ -8,7 +8,7 @@ const serverSchema = z.object({
 });
 
 const clientSchema = z.object({
-  NEXT_PUBLIC_WHATSAPP_NUMBER: z.string().regex(/^\d{10,15}$/, "NEXT_PUBLIC_WHATSAPP_NUMBER must be 10–15 digits"),
+  NEXT_PUBLIC_WHATSAPP_NUMBER: z.string().regex(/^\d{10,15}$/, "NEXT_PUBLIC_WHATSAPP_NUMBER must be 10 to 15 digits"),
   NEXT_PUBLIC_SITE_URL: z.string().url("NEXT_PUBLIC_SITE_URL must be a valid URL"),
 });
 
@@ -17,7 +17,7 @@ const buildFallbacks = {
   CONTACT_NOTIFICATION_EMAIL: "build@example.com",
   UPSTASH_REDIS_REST_URL: "https://dummy.upstash.io",
   UPSTASH_REDIS_REST_TOKEN: "dummy_token_for_build",
-  NEXT_PUBLIC_WHATSAPP_NUMBER: "917619436055",
+  NEXT_PUBLIC_WHATSAPP_NUMBER: "917483877595",
   NEXT_PUBLIC_SITE_URL: "https://therootfood.com",
 };
 

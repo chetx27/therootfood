@@ -6,12 +6,12 @@ import { PageHero } from "@/components/shared/page-hero";
 import { ContactSection } from "@/components/sections/contact-section";
 import { WhatsAppLogo } from "@/components/ui/whatsapp-logo";
 import { buildWhatsAppLink, defaultEnquiryMessage } from "@/lib/whatsapp";
-import { businessInfo } from "@/lib/business-info";
+import { businessInfo, farmPhoneDisplay } from "@/lib/business-info";
 import { faqs } from "@/lib/faqs";
 
 export const metadata = {
   title: "Contact Us | TheRootFood",
-  description: "Talk to the farm — WhatsApp, call, email, or visit us in Bangalore. A real person always replies.",
+  description: "Talk to the farm on WhatsApp, by phone or by email, or visit us in Bangalore. A real person always replies.",
   alternates: { canonical: "/contact" },
 };
 
@@ -19,7 +19,7 @@ const channels = [
   {
     icon: Phone,
     label: "Call us",
-    value: "+91 76194 36055",
+    value: farmPhoneDisplay,
     hint: "Tap to dial",
     href: `tel:${businessInfo.phone}`,
   },
@@ -36,7 +36,7 @@ const channels = [
     value: "Bangalore, Karnataka",
     hint: "Message us for directions",
     href: buildWhatsAppLink(
-      "Hi TheRootFood team! I'd love to visit the farm / pick up an order. Could you share directions and a good time to come?"
+      "Hi TheRootFood team! I'd like to visit the farm or pick up an order. Could you share directions and a good time to come?"
     ),
     external: true,
   },
@@ -64,7 +64,7 @@ export default function ContactPage() {
               Talk to the <span className="italic text-primary">farm.</span>
             </>
           }
-          description="Questions about an order, a cake, or bulk supply? A real person from TheRootFood will get back to you — no call centres."
+          description="Questions about an order, a cake or bulk supply? Someone from the farm will get back to you. No call centres."
         />
 
         <section className="relative z-10 -mt-14 px-4 md:px-6">

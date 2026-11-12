@@ -4,7 +4,7 @@ export interface CurrencyOption {
   code: CurrencyCode;
   label: string;
   symbol: string;
-  /** Approximate multiplier from INR → this currency (display only). */
+  /** Approximate multiplier from INR → this currency. */
   fromInr: number;
   locale: string;
 }
@@ -18,16 +18,47 @@ export const CURRENCIES: CurrencyOption[] = [
   { code: "AED", label: "UAE Dirham", symbol: "د.إ", fromInr: 0.044, locale: "en-AE" },
 ];
 
-export function convertFromInr(amountInr: number, currency: CurrencyOption): number {
-  return amountInr * currency.fromInr;
+export const INR = CURRENCIES[0];
+
+export function getCurrency(code: string | null | undefined): CurrencyOption {
+  return CURRENCIES.find((c) => c.code === code) ?? INR;
 }
 
-export function formatMoney(amountInr: number, currency: CurrencyOption): string {
-  const value = convertFromInr(amountInr, currency);
+function fractionDigits(currency: CurrencyOption): number {
+  return currency.code === "INR" ? 0 : 2;
+}
+
+/** Converts a rupee amount and rounds it the way the shopper will see it. */
+export function convertFromInr(amountInr: number, currency: CurrencyOption): number {
+  const factor = 10 ** fractionDigits(currency);
+  return Math.round(amountInr * currency.fromInr * factor) / factor;
+}
+
+/**
+ * Line total in the shopper's currency. The unit price is rounded first and then
+ * multiplied, so a basket always adds up to exactly what the price tags say.
+ */
+export function lineTotal(unitPriceInr: number, quantity: number, currency: CurrencyOption): number {
+  const factor = 10 ** fractionDigits(currency);
+  return Math.round(convertFromInr(unitPriceInr, currency) * factor * quantity) / factor;
+}
+
+/** Formats an amount that is already in `currency`. */
+export function formatAmount(amount: number, currency: CurrencyOption): string {
+  const digits = fractionDigits(currency);
   return new Intl.NumberFormat(currency.locale, {
     style: "currency",
     currency: currency.code,
-    maximumFractionDigits: currency.code === "INR" ? 0 : 2,
-    minimumFractionDigits: currency.code === "INR" ? 0 : 2,
-  }).format(value);
+    maximumFractionDigits: digits,
+    minimumFractionDigits: digits,
+  }).format(amount);
+}
+
+/** Converts a rupee amount to `currency` and formats it. */
+export function formatMoney(amountInr: number, currency: CurrencyOption): string {
+  return formatAmount(convertFromInr(amountInr, currency), currency);
+}
+
+export function formatInr(amountInr: number): string {
+  return formatAmount(amountInr, INR);
 }

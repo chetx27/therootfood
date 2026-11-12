@@ -1,10 +1,10 @@
 export const businessInfo = {
   name: "TheRootFood",
-  description: "Farm-direct flours, herbal roots, free-range eggs, and fresh artisanal foods.",
+  description: "Flours, herbal roots, country eggs and fresh meat from our farm, plus cakes and brownies from Nitara's Fine Bakes. Based in Bangalore.",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://therootfood.com",
   email: "therootfoodsupport@gmail.com",
-  phone: "+917619436055",
-  currenciesAccepted: "INR",
+  phone: "+917483877595",
+  currenciesAccepted: "INR, USD, EUR, GBP, AED",
   paymentAccepted: "Cash, UPI, Bank Transfer",
   address: {
     "@type": "PostalAddress",
@@ -18,3 +18,6 @@ export const businessInfo = {
     longitude: "77.5946",
   }
 };
+
+/** The farm's phone number the way we print it on the site. */
+export const farmPhoneDisplay = "+91 74838 77595";

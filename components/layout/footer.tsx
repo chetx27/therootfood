@@ -5,6 +5,7 @@ import { FadeIn } from "@/components/shared/fade-in";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { buildWhatsAppLink, defaultEnquiryMessage } from "@/lib/whatsapp";
+import { businessInfo, farmPhoneDisplay } from "@/lib/business-info";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -20,8 +21,8 @@ export function Footer() {
             <span className="highlight-block">at your place?</span>
           </h2>
           <p className="text-white/70 text-base sm:text-lg mb-8 max-w-xl mx-auto leading-relaxed">
-            Send us your order on WhatsApp from anywhere in the world — a real person from the
-            farm replies, always.
+            Send us your order on WhatsApp from anywhere in the world. A real person from the farm
+            always replies.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <a
@@ -54,8 +55,8 @@ export function Footer() {
             <div className="col-span-2">
               <h3 className="font-heading text-2xl font-semibold mb-4">TheRootFood</h3>
               <p className="text-white/70 max-w-sm leading-relaxed text-sm">
-                Premium farm-direct products straight to your kitchen. Authentic, healthy, and natural
-                — sourced from our farm and trusted partners, shipped across India and worldwide.
+                A family farm and bakery based in Bangalore. Flours, roots, eggs and meat from our farm and
+                partner farms we know, plus cakes and brownies from Nitara&apos;s Fine Bakes.
               </p>
             </div>
 
@@ -87,23 +88,23 @@ export function Footer() {
             </div>
 
             {/* Contact */}
-            <div>
+            <div className="min-w-0">
               <h4 className="font-semibold mb-4 text-sm uppercase tracking-widest text-primary">
                 Contact
               </h4>
               <address className="not-italic text-white/70 space-y-3 text-sm">
                 <p>
                   <a
-                    href="tel:+917619436055"
+                    href={`tel:${businessInfo.phone}`}
                     className="hover:text-white transition-colors inline-flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-sm"
                   >
                     <Phone className="h-4 w-4 shrink-0" />
-                    +91 76194 36055
+                    {farmPhoneDisplay}
                   </a>
                 </p>
                 <p>
                   <a
-                    href="https://wa.me/917619436055"
+                    href={buildWhatsAppLink(defaultEnquiryMessage())}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-white transition-colors inline-flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-sm"
@@ -114,11 +115,11 @@ export function Footer() {
                 </p>
                 <p>
                   <a
-                    href="mailto:therootfoodsupport@gmail.com"
-                    className="hover:text-white transition-colors inline-flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-sm"
+                    href={`mailto:${businessInfo.email}`}
+                    className="hover:text-white transition-colors inline-flex items-start gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-sm"
                   >
-                    <Mail className="h-4 w-4 shrink-0" />
-                    therootfoodsupport@gmail.com
+                    <Mail className="mt-0.5 h-4 w-4 shrink-0" />
+                    <span className="break-all">{businessInfo.email}</span>
                   </a>
                 </p>
                 <p className="text-white/45 mt-4 text-xs leading-relaxed">

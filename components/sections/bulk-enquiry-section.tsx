@@ -184,8 +184,8 @@ export function BulkEnquirySection() {
             <span className="highlight-block mt-3 inline-block">for business</span>
           </h2>
           <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-slate-600">
-            Premium farm ingredients for restaurants, caterers, and growing brands — quoted in INR,
-            USD, or EUR.
+            Flour, eggs and meat for restaurants, caterers and shops at wholesale rates. We quote in
+            INR, USD or EUR.
           </p>
         </FadeIn>
 
@@ -198,7 +198,7 @@ export function BulkEnquirySection() {
                   Request a quote
                 </h3>
                 <p className="mt-2 text-sm text-slate-600">
-                  Tell us what you need — we&apos;ll reply with volume pricing.
+                  Tell us what you need and we&apos;ll reply with volume pricing.
                 </p>
                 <ul className="mt-4 flex flex-wrap gap-2">
                   {audiences.map((a) => (
@@ -245,7 +245,7 @@ export function BulkEnquirySection() {
                         <FormLabel>Business name</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Your Company Ltd"
+                            placeholder="Your café, shop or kitchen"
                             className="h-12 rounded-xl border-slate-200 bg-slate-50/80"
                             {...field}
                           />
@@ -262,7 +262,7 @@ export function BulkEnquirySection() {
                         <FormLabel>Contact person</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="John Doe"
+                            placeholder="Your name"
                             className="h-12 rounded-xl border-slate-200 bg-slate-50/80"
                             {...field}
                           />

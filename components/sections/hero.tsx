@@ -138,8 +138,8 @@ export function Hero() {
               </h1>
 
               <p className="mb-10 max-w-md px-1 text-[15px] leading-[1.8] text-white/65 sm:mb-11 sm:text-base md:mb-12">
-                One family, two kitchens — honest farm produce with no middlemen, and celebration bakes from
-                Nitara&apos;s Fine Bakes. Pick what you love; we&apos;ll confirm it personally on WhatsApp.
+                One family, two kitchens. Farm produce sold straight to you with no middlemen, and celebration bakes
+                from Nitara&apos;s Fine Bakes. Pick what you like and we&apos;ll confirm it with you on WhatsApp.
               </p>
 
               <div className="mb-12 grid w-full max-w-md gap-3 text-left sm:mb-14 lg:max-w-2xl lg:grid-cols-2 lg:gap-4">
@@ -188,7 +188,7 @@ export function Hero() {
                   <div className="relative aspect-square w-full drop-shadow-[0_28px_50px_rgba(0,0,0,0.45)]">
                     <Image
                       src="/hero-farm-box.webp"
-                      alt="TheRootFood farm box — fresh eggs, flours, roots, and bakes"
+                      alt="TheRootFood farm box with fresh eggs, flours, roots and bakes"
                       fill
                       className="object-contain"
                       sizes="(max-width: 640px) 320px, (max-width: 1024px) 460px, 520px"

@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { Product } from "@/types/product";
 import { products } from "@/data/products";
+import { lineTotal, type CurrencyOption } from "@/lib/currency";
 
 export interface CartItem {
   productId: string;
@@ -32,6 +33,16 @@ export function getProduct(productId: string): Product | undefined {
 /** Custom cakes have their own enquiry page, so they never go in the basket. */
 export function isBasketable(product: Product | undefined): product is Product {
   return !!product && product.available !== false && product.priceType !== "custom-form";
+}
+
+/** Sum of the fixed-price items, in the currency the shopper is browsing in. */
+export function basketTotal(items: CartItem[], currency: CurrencyOption): number {
+  const sum = items.reduce((total, item) => {
+    const product = getProduct(item.productId);
+    if (product?.priceType !== "fixed" || product.price == null) return total;
+    return total + lineTotal(product.price, item.quantity, currency);
+  }, 0);
+  return Math.round(sum * 100) / 100;
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
@@ -84,7 +95,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
           }
           return [...prev, { productId, quantity }];
         });
-        setIsOpen(true);
       },
       removeItem: (productId) => setItems((prev) => prev.filter((i) => i.productId !== productId)),
       setQuantity: (productId, quantity) => {

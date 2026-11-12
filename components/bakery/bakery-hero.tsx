@@ -44,7 +44,8 @@ export function BakeryHero() {
           <p className="mt-2 font-heading text-lg uppercase tracking-[0.4em] text-[#5a1f38] sm:text-2xl">Fine Bakes</p>
           <p className="mt-5 text-sm font-medium text-[#b0537a] sm:text-base">{bakery.tagline}</p>
           <p className="mx-auto mt-4 max-w-md text-slate-600">
-            Celebration cakes, fudgy brownies and custom bakes — made in small batches with farm-fresh eggs.
+            Celebration cakes, fudgy brownies and custom bakes, made at home in small batches with eggs from our own
+            farm.
           </p>
 
           <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
@@ -70,18 +71,22 @@ export function BakeryHero() {
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-slate-500">
             <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-[#b0537a]" />{bakery.location}</span>
-            <a href={`tel:+91${bakery.phone}`} className="flex items-center gap-1.5 hover:text-[#5a1f38]">
-              <Phone className="h-4 w-4 text-[#b0537a]" />+91 {bakery.phone}
+            <a href={`tel:${bakery.phone}`} className="flex items-center gap-1.5 hover:text-[#5a1f38]">
+              <Phone className="h-4 w-4 text-[#b0537a]" />{bakery.phoneDisplay}
             </a>
           </div>
 
-          <nav className="mt-10 flex justify-center gap-2 text-sm font-semibold" aria-label="Bakery sections">
+          <nav className="mt-10 flex flex-wrap items-center justify-center gap-1.5 text-xs font-semibold min-[390px]:gap-2 min-[390px]:text-[13px] min-[440px]:text-sm" aria-label="Bakery sections">
             {[
               { href: "#cake-menu", label: "Cake menu" },
               { href: "#brownies", label: "Brownies" },
               { href: "#cakes", label: "Custom cake" },
             ].map((l) => (
-              <a key={l.href} href={l.href} className="rounded-full border border-[#e8b4c8] bg-white/70 px-4 py-2 text-[#5a1f38] transition hover:bg-white">
+              <a
+                key={l.href}
+                href={l.href}
+                className="inline-flex h-10 items-center justify-center whitespace-nowrap rounded-full border border-[#e8b4c8] bg-white/70 px-2.5 text-[#5a1f38] transition hover:bg-white min-[390px]:px-3 min-[440px]:px-4"
+              >
                 {l.label}
               </a>
             ))}

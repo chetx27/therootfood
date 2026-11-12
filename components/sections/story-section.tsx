@@ -5,25 +5,25 @@ const STEPS = [
     number: "01",
     title: "Grown and raised on our farm",
     description:
-      "Our hens roam free, our vetiver grows wild, and our grains are farmed without shortcuts. What we can't grow ourselves comes from partner farms we personally know and trust.",
+      "Our hens roam free, our vetiver grows wild and our grains are farmed the slow way. What we can't grow ourselves comes from partner farms we know personally.",
   },
   {
     number: "02",
     title: "Prepared in small batches",
     description:
-      "Flours are stone-ground to order, cakes are baked fresh for your date, and soaps are handmade — nothing sits in a warehouse losing its character.",
+      "Flour is stone-ground a little at a time, cakes are baked for your date and soap is made by hand. Nothing sits in a warehouse.",
   },
   {
     number: "03",
     title: "Order on WhatsApp, from anywhere",
     description:
-      "Fill your basket and send it to us — we confirm personally, and you pay by UPI, transfer or cash. Fresh produce delivers across Bangalore within 24 hours; flours, roots, and soaps ship across India and internationally.",
+      "Fill your basket and send it to us. We confirm it with you, and you pay by UPI, transfer or cash. Fresh produce reaches you anywhere in Bangalore within 24 hours. Flours, roots and soaps ship across India and abroad.",
   },
   {
     number: "04",
     title: "A real person behind every order",
     description:
-      "No call centres. The people who farm your food answer your questions, pack your order, and follow up — on WhatsApp, email, or right here in chat.",
+      "No call centres. The people who grow your food answer your questions, pack your order and follow up with you on WhatsApp or email.",
   },
 ];
 

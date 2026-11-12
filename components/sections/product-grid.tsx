@@ -6,9 +6,9 @@ import { ArrowRight, Search, ShoppingBasket, X } from "lucide-react";
 import { products } from "@/data/products";
 import { ProductCategory } from "@/types/product";
 import { ProductCard, categoryLabels } from "./product-card";
-import { MobileCarousel } from "@/components/shared/mobile-carousel";
-import { CURRENCIES, type CurrencyCode } from "@/lib/currency";
-import { useCart } from "@/lib/cart-context";
+import { CURRENCIES, formatAmount, type CurrencyCode } from "@/lib/currency";
+import { useCurrency } from "@/lib/use-currency";
+import { basketTotal, useCart } from "@/lib/cart-context";
 import { cn } from "@/lib/utils";
 
 const categoryOrder = Object.keys(categoryLabels) as ProductCategory[];
@@ -16,10 +16,9 @@ const categoryOrder = Object.keys(categoryLabels) as ProductCategory[];
 export function ProductGrid() {
   const [activeCategory, setActiveCategory] = useState<ProductCategory | "all">("all");
   const [query, setQuery] = useState("");
-  const [currencyCode, setCurrencyCode] = useState<CurrencyCode>("INR");
-  const { totalItems, totalAmount, setIsOpen } = useCart();
-
-  const currency = CURRENCIES.find((c) => c.code === currencyCode) ?? CURRENCIES[0];
+  const { currency, setCurrencyCode } = useCurrency();
+  const { items, totalItems, setIsOpen } = useCart();
+  const total = basketTotal(items, currency);
 
   const counts = useMemo(() => {
     const map = new Map<ProductCategory, number>();
@@ -36,7 +35,9 @@ export function ProductGrid() {
 
   const chips: { value: ProductCategory | "all"; label: string; count: number }[] = [
     { value: "all", label: "Everything", count: products.length },
-    ...categoryOrder.map((c) => ({ value: c, label: categoryLabels[c], count: counts.get(c) ?? 0 })),
+    ...categoryOrder
+      .map((c) => ({ value: c, label: categoryLabels[c], count: counts.get(c) ?? 0 }))
+      .filter((chip) => chip.count > 0),
   ];
 
   return (
@@ -49,7 +50,9 @@ export function ProductGrid() {
               What would you like this week?
             </h2>
             <p className="mt-3 text-slate-500">
-              Prices are per unit shown. Delivery charges are confirmed with you on WhatsApp.
+              {currency.code === "INR"
+                ? "Prices are for the pack size shown. We tell you the delivery charge on WhatsApp before you pay."
+                : `Prices are converted to ${currency.code} at an approximate rate. Your basket and order stay in ${currency.code}, and we confirm the exact total on WhatsApp before you pay.`}
             </p>
           </div>
 
@@ -78,7 +81,7 @@ export function ProductGrid() {
             <label className="relative">
               <span className="sr-only">Show prices in</span>
               <select
-                value={currencyCode}
+                value={currency.code}
                 onChange={(e) => setCurrencyCode(e.target.value as CurrencyCode)}
                 className="h-12 w-full appearance-none rounded-full border border-slate-200 bg-slate-50 pl-5 pr-10 text-sm font-semibold outline-none transition focus:border-forest/40 focus:ring-4 focus:ring-forest/10 sm:w-auto"
               >
@@ -127,15 +130,7 @@ export function ProductGrid() {
           </div>
         </div>
 
-        <div className="sm:hidden">
-          <MobileCarousel key={filteredProducts.map((p) => p.id).join()} label="Products" gridClassName="">
-            {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} currency={currency} />
-            ))}
-          </MobileCarousel>
-        </div>
-
-        <motion.div layout className="hidden gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+        <motion.div layout className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8">
           <AnimatePresence mode="popLayout">
             {filteredProducts.map((product) => (
               <motion.div
@@ -155,8 +150,12 @@ export function ProductGrid() {
 
         {filteredProducts.length === 0 && (
           <div className="rounded-3xl border border-dashed border-slate-200 py-16 text-center">
-            <p className="font-heading text-xl font-semibold">Nothing matches &ldquo;{query}&rdquo;</p>
-            <p className="mt-2 text-sm text-slate-500">Try another word, or ask us on WhatsApp — we may still have it.</p>
+            <p className="font-heading text-xl font-semibold">
+              {query.trim() ? <>Nothing matches &ldquo;{query.trim()}&rdquo;</> : "Nothing here right now"}
+            </p>
+            <p className="mt-2 px-4 text-sm text-slate-500">
+              Try another word or category, or ask us on WhatsApp. We may still have it.
+            </p>
           </div>
         )}
       </div>
@@ -183,7 +182,7 @@ export function ProductGrid() {
               <span className="min-w-0 flex-1">
                 <span className="block text-sm font-semibold">View basket</span>
                 <span className="block text-xs text-white/60">
-                  {totalAmount > 0 ? `About ₹${totalAmount} · ` : ""}send on WhatsApp when ready
+                  {total > 0 ? `About ${formatAmount(total, currency)} so far` : "Send it on WhatsApp when ready"}
                 </span>
               </span>
               <ArrowRight className="h-5 w-5 shrink-0" />

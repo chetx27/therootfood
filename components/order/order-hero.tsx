@@ -6,12 +6,12 @@ const steps = [
   {
     icon: ShoppingBasket,
     title: "Fill your basket",
-    body: "Pick flours, eggs, meat, bakes and soap. Adjust quantities any time.",
+    body: "Pick flours, eggs, meat and soap. Change the quantities any time.",
   },
   {
     icon: WhatsAppLogo,
     title: "Send it on WhatsApp",
-    body: "One tap sends your list — together, or ask about items one by one.",
+    body: "One tap sends us the whole list. You can also ask about items one by one.",
   },
   {
     icon: Truck,

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Phone } from "lucide-react";
 import { WhatsAppLogo } from "@/components/ui/whatsapp-logo";
 import { buildWhatsAppLink, defaultEnquiryMessage } from "@/lib/whatsapp";
-import { businessInfo } from "@/lib/business-info";
+import { businessInfo, farmPhoneDisplay } from "@/lib/business-info";
 
 export function HelpCta({ title = "Still have a question?", secondary }: { title?: string; secondary?: { href: string; label: string } }) {
   return (
@@ -15,7 +15,7 @@ export function HelpCta({ title = "Still have a question?", secondary }: { title
         <div className="relative">
           <h2 className="font-heading text-3xl font-semibold tracking-tight sm:text-5xl">{title}</h2>
           <p className="mx-auto mt-4 max-w-lg text-white/75">
-            A real person from the farm replies — usually within a few hours. No call centres, no bots on the other end.
+            A real person from the farm replies, usually within a few hours. No call centres.
           </p>
           <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
             <a
@@ -32,7 +32,7 @@ export function HelpCta({ title = "Still have a question?", secondary }: { title
               className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/30 px-6 text-sm font-semibold transition hover:bg-white/10"
             >
               <Phone className="h-4 w-4" />
-              Call +91 76194 36055
+              Call {farmPhoneDisplay}
             </a>
             {secondary && (
               <Link

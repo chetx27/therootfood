@@ -35,7 +35,7 @@ export function SignatureBakes({ withMenuLink = false }: { withMenuLink?: boolea
           <h2 className="mt-4 font-heading text-4xl font-normal tracking-[-0.02em] text-white sm:text-5xl md:text-6xl">
             The bakes everyone <span className="italic text-[#e8b4c8]">asks for.</span>
           </h2>
-          <p className="mt-4 text-white/65">Our most-ordered cakes and brownies — baked fresh for every order.</p>
+          <p className="mt-4 text-white/65">The cakes and brownies people order again and again. Each one is baked after you order.</p>
         </FadeIn>
 
         <MobileCarousel label="Signature bakes" tone="dark" gridClassName="sm:grid-cols-2 lg:grid-cols-4">
@@ -53,8 +53,10 @@ export function SignatureBakes({ withMenuLink = false }: { withMenuLink?: boolea
                     alt={b.name}
                     fill
                     quality={90}
+                    // Eager: slides waiting off to the side of the phone carousel are never lazy-loaded in time.
+                    loading="eager"
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    sizes="(max-width: 640px) 82vw, (max-width: 1024px) 50vw, 25vw"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#3d1426] via-[#3d1426]/20 to-transparent" />
                   <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-[#b0537a]">
@@ -94,9 +96,9 @@ export function SignatureBakes({ withMenuLink = false }: { withMenuLink?: boolea
 
 const steps = [
   { icon: Sparkles, title: "Pick your bake", body: "Choose from the menu or describe your own idea." },
-  { icon: MessageCircleHeart, title: "Message on WhatsApp", body: "Tap any item — your order note is written for you." },
+  { icon: MessageCircleHeart, title: "Message on WhatsApp", body: "Tap any item and the order note is already typed for you." },
   { icon: CalendarHeart, title: "Confirm the date", body: "Give us 3 days for custom cakes. We'll confirm the price." },
-  { icon: PackageCheck, title: "Fresh to your door", body: "Baked fresh and delivered — delivery charge depends on your location." },
+  { icon: PackageCheck, title: "Fresh to your door", body: "We bake it and deliver it. The delivery charge depends on where you are." },
 ];
 
 export function HowToOrderBakes() {

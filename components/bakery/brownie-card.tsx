@@ -14,7 +14,8 @@ export function BrownieCard({ item }: { item: BrownieItem }) {
   return (
     <article className="flex flex-col overflow-hidden rounded-[1.5rem] bg-white shadow-[0_20px_40px_-30px_rgba(90,31,56,0.5)] ring-1 ring-[#f1d3df]">
       <div className="relative aspect-[3/2]">
-        <Image src={item.image} alt={item.name} fill quality={90} className="object-cover" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" />
+        {/* Eager: slides waiting off to the side of the phone carousel are never lazy-loaded in time. */}
+        <Image src={item.image} alt={item.name} fill quality={90} loading="eager" className="object-cover" sizes="(max-width: 640px) 82vw, (max-width: 1280px) 50vw, 25vw" />
       </div>
       <div className="flex flex-1 flex-col p-5">
         <h3 className="line-clamp-2 min-h-[3.5rem] font-heading text-xl font-semibold leading-7 tracking-tight text-[#3d1426]">{item.name}</h3>

@@ -16,9 +16,9 @@ function occasionMessage(phrase: string, pick?: string) {
     "Hi Nitara's Fine Bakes!",
     "",
     pick
-      ? `I'm planning something for a ${phrase} and I'd love the ${pick}.`
-      : `I'm planning something for a ${phrase} — could you suggest a cake or brownies?`,
-    "Could you let me know the price and availability? Thank you!",
+      ? `I'm planning something for ${phrase} and I'd like the ${pick}.`
+      : `I'm planning something for ${phrase}. Could you suggest a cake or brownies?`,
+    "Please tell me the price and whether you can do it. Thank you!",
   ].join("\n");
 }
 
@@ -49,7 +49,7 @@ export function Occasions() {
               What are we <span className="italic text-[#b0537a]">celebrating?</span>
             </h2>
           </div>
-          <p className="max-w-xs text-sm text-slate-500">Pick a moment — we&apos;ll show you what Nitara would bake for it.</p>
+          <p className="max-w-xs text-sm text-slate-500">Pick the occasion and see what Nitara would bake for it.</p>
         </div>
 
         <div
@@ -118,25 +118,22 @@ export function Occasions() {
           </ul>
 
           <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-[#3d1426] shadow-[0_40px_80px_-40px_rgba(61,20,38,0.7)] sm:aspect-[4/3] lg:aspect-auto lg:min-h-[560px]">
-            <AnimatePresence mode="popLayout" initial={false}>
-              <motion.div
-                key={current.id}
-                className="absolute inset-0"
-                initial={{ opacity: 0, scale: 1.08 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <Image
-                  src={current.image}
-                  alt={`${current.title} bakes by ${bakery.name}`}
-                  fill
-                  quality={90}
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 600px"
-                />
-              </motion.div>
-            </AnimatePresence>
+            {/* Every photo stays mounted and cross-fades, so a slide never shows up half-loaded. */}
+            {occasions.map((o, i) => (
+              <Image
+                key={o.id}
+                src={o.image}
+                alt={i === active ? `${o.title} bakes by ${bakery.name}` : ""}
+                aria-hidden={i !== active}
+                fill
+                quality={90}
+                className={cn(
+                  "object-cover transition-[opacity,transform] duration-700 ease-out",
+                  i === active ? "scale-100 opacity-100" : "scale-105 opacity-0",
+                )}
+                sizes="(max-width: 1024px) 100vw, 600px"
+              />
+            ))}
             <div className="absolute inset-0 bg-gradient-to-t from-[#2a0d1a] via-[#2a0d1a]/40 to-transparent" />
 
             <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
@@ -176,7 +173,7 @@ export function Occasions() {
                     className="mt-6 inline-flex h-11 items-center gap-2 rounded-full bg-[#25D366] px-5 text-sm font-semibold text-white transition hover:bg-[#1ebe5b]"
                   >
                     <WhatsAppLogo className="h-4 w-4" />
-                    Plan my {current.title.toLowerCase()} order
+                    Plan {current.phrase}
                   </a>
                 </motion.div>
               </AnimatePresence>

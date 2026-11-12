@@ -32,8 +32,9 @@ function SetCard({ item, eyebrow, defaultIndex }: { item: SetItem; eyebrow: stri
           alt={item.name}
           fill
           quality={90}
+          loading="eager"
           className="object-cover transition-transform duration-700 group-hover:scale-105"
-          sizes="(max-width: 640px) 100vw, 280px"
+          sizes="(max-width: 640px) 82vw, 280px"
         />
       </div>
 

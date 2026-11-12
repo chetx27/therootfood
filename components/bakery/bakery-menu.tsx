@@ -49,6 +49,8 @@ export function BakeryMenu() {
                       alt={`${cat.title} from ${bakery.name}`}
                       fill
                       quality={90}
+                      // Hidden tabs on phones never trigger lazy loading, so the photo would pop in late.
+                      loading="eager"
                       className="object-cover"
                       sizes="(max-width: 1024px) 100vw, 380px"
                     />
@@ -97,7 +99,7 @@ export function BakeryMenu() {
               </p>
             ))}
           </div>
-          <p className="mt-3 text-center text-sm text-slate-500">Tap <span className="font-semibold text-[#128C4B]">Order</span> beside any cake to send it straight to Nitara on WhatsApp.</p>
+          <p className="mt-3 text-center text-sm text-slate-500">Tap <span className="font-semibold text-[#128C4B]">Order</span> next to any cake and it goes straight to Nitara on WhatsApp.</p>
         </div>
       </section>
 

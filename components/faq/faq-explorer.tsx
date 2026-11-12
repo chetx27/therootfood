@@ -47,7 +47,7 @@ export function FaqExplorer() {
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search — try “delivery”, “eggless” or “UPI”"
+            placeholder="Try “delivery”, “eggless” or “UPI”"
             className="h-16 w-full rounded-full border border-slate-200 bg-white pl-14 pr-6 text-base shadow-[0_20px_50px_-20px_rgba(15,23,42,0.35)] outline-none transition focus:border-forest/40 focus:ring-4 focus:ring-forest/10"
           />
         </label>
@@ -152,7 +152,7 @@ export function FaqExplorer() {
         {visible.length === 0 && (
           <div className="rounded-3xl border border-dashed border-slate-200 py-14 text-center">
             <p className="font-heading text-xl font-semibold">No answers for &ldquo;{query}&rdquo; yet</p>
-            <p className="mt-2 text-sm text-slate-500">Ask us directly — we&apos;ll reply on WhatsApp.</p>
+            <p className="mt-2 text-sm text-slate-500">Ask us directly and we&apos;ll reply on WhatsApp.</p>
           </div>
         )}
       </div>

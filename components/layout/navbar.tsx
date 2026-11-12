@@ -31,7 +31,7 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  /** Always land at the top of the landing page — even when already on `/`. */
+  /** Always land at the top of the landing page, even when already on `/`. */
   function goHome(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
 

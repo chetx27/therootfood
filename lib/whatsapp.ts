@@ -1,4 +1,6 @@
-const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "917619436055";
+import { formatAmount, formatInr, lineTotal, type CurrencyOption } from "@/lib/currency";
+
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "917483877595";
 
 export function buildWhatsAppLink(message: string, number: string = WHATSAPP_NUMBER): string {
   const encoded = encodeURIComponent(message.trim());
@@ -9,9 +11,9 @@ export function bakeryItemMessage(item: string, option?: string): string {
   return [
     "Hi Nitara's Fine Bakes!",
     "",
-    `I saw your menu on TheRootFood and I'd love to order the ${item}${option ? ` (${option})` : ""}.`,
+    `I saw your menu on TheRootFood and I'd like to order the ${item}${option ? ` (${option})` : ""}.`,
     "",
-    "Could you let me know when it can be ready and the delivery charge to my area? Thank you!",
+    "When can it be ready, and what's the delivery charge to my area? Thank you!",
   ].join("\n");
 }
 
@@ -19,12 +21,13 @@ export interface EnquiryLine {
   name: string;
   quantity: number;
   unit?: string;
+  /** Unit price in rupees. Leave out for "price on request" items. */
   price?: number;
 }
 
 function describeLine(line: EnquiryLine): string {
   const qty = line.unit ? `${line.quantity} × (${line.unit.replace(/^per\s+/i, "")})` : `${line.quantity}`;
-  return `${line.name} — ${qty}`;
+  return `${line.name}: ${qty}`;
 }
 
 function formatDate(value: string): string {
@@ -33,28 +36,47 @@ function formatDate(value: string): string {
   return date.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" });
 }
 
-export function productEnquiryMessage(productName: string): string {
-  return `Hi TheRootFood team! I came across your ${productName} on the website and I'd love to order some. Is it available right now? Please let me know the price and how delivery works. Thanks!`;
+/** Shoppers who picked another currency on the site want to be quoted and to pay in it. */
+function paysAbroad(currency?: CurrencyOption): currency is CurrencyOption {
+  return !!currency && currency.code !== "INR";
 }
 
-export function singleItemEnquiryMessage(line: EnquiryLine): string {
+export function productEnquiryMessage(productName: string): string {
+  return `Hi TheRootFood team! I saw the ${productName} on your website and I'd like to order some. Is it available right now? Please tell me the price and how delivery works. Thanks!`;
+}
+
+export function singleItemEnquiryMessage(line: EnquiryLine, currency?: CurrencyOption): string {
   return [
     "Hi TheRootFood team!",
     "",
     `I'd like to order ${describeLine(line)}.`,
     "",
-    "Could you confirm it's in stock and let me know the total with delivery? Happy to share my address once you confirm.",
+    paysAbroad(currency)
+      ? `Could you confirm it's in stock and send me the total with delivery in ${currency.code}? I'd like to pay in ${currency.code}. I'll share my address once you confirm.`
+      : "Could you confirm it's in stock and send me the total with delivery? I'll share my address once you confirm.",
     "",
     "Thank you!",
   ].join("\n");
 }
 
-export function basketEnquiryMessage(lines: EnquiryLine[]): string {
-  if (lines.length === 1) return singleItemEnquiryMessage(lines[0]);
+export function basketEnquiryMessage(lines: EnquiryLine[], currency?: CurrencyOption): string {
+  if (lines.length === 1) return singleItemEnquiryMessage(lines[0], currency);
 
   const list = lines.map((line, i) => `${i + 1}. ${describeLine(line)}`).join("\n");
-  const estimate = lines.reduce((sum, l) => sum + (l.price ?? 0) * l.quantity, 0);
+  const estimateInr = lines.reduce((sum, l) => sum + (l.price ?? 0) * l.quantity, 0);
   const hasUnpriced = lines.some((l) => l.price == null);
+  const abroad = paysAbroad(currency);
+
+  let estimate = "";
+  if (estimateInr > 0) {
+    const shown = abroad
+      ? `${formatAmount(
+          lines.reduce((sum, l) => sum + lineTotal(l.price ?? 0, l.quantity, currency), 0),
+          currency
+        )} (around ${formatInr(estimateInr)})`
+      : formatInr(estimateInr);
+    estimate = `The website shows about ${shown}${hasUnpriced ? " for the priced items" : ""}.`;
+  }
 
   return [
     "Hi TheRootFood team!",
@@ -63,10 +85,10 @@ export function basketEnquiryMessage(lines: EnquiryLine[]): string {
     "",
     list,
     "",
-    estimate > 0
-      ? `The website shows about ₹${estimate}${hasUnpriced ? " for the priced items" : ""}.`
-      : "",
-    "Could you confirm availability and the final total with delivery? I'll send my address once you confirm.",
+    estimate,
+    abroad
+      ? `Could you confirm availability and the final total with delivery in ${currency.code}? I'd like to pay in ${currency.code}. I'll send my address once you confirm.`
+      : "Could you confirm availability and the final total with delivery? I'll send my address once you confirm.",
     "",
     "Thank you!",
   ]
@@ -75,7 +97,7 @@ export function basketEnquiryMessage(lines: EnquiryLine[]): string {
 }
 
 export function bulkEnquiryMessage(businessName: string, productInterest: string): string {
-  return `Hi TheRootFood team! This is ${businessName}. We're looking to buy ${productInterest} in bulk on a regular basis. Could you share your wholesale pricing, minimum order quantity, and how often you can supply? Looking forward to working with you.`;
+  return `Hi TheRootFood team! This is ${businessName}. We'd like to buy ${productInterest} in bulk on a regular basis. Could you share your wholesale pricing, minimum order quantity, and how often you can supply?`;
 }
 
 export function cakeEnquiryMessage(details: {
@@ -90,7 +112,7 @@ export function cakeEnquiryMessage(details: {
   return [
     details.name ? `Hi Nitara's Fine Bakes, this is ${details.name}!` : "Hi Nitara's Fine Bakes!",
     "",
-    "I'd love to order a custom cake from you:",
+    "I'd like to order a custom cake:",
     "",
     `• Flavour: ${details.flavor}`,
     `• Size: ${details.size}`,
@@ -98,7 +120,7 @@ export function cakeEnquiryMessage(details: {
     `• Needed by: ${formatDate(details.requiredDate)}`,
     details.message ? `• Notes: ${details.message}` : "",
     "",
-    "Could you let me know if that date works and what it would cost? Thank you!",
+    "Does that date work, and what would it cost? Thank you!",
   ]
     .filter((line, i, arr) => !(line === "" && arr[i - 1] === ""))
     .join("\n");
@@ -108,14 +130,14 @@ export function customBakeMessage(idea: string, name?: string): string {
   return [
     name ? `Hi Nitara's Fine Bakes, this is ${name}!` : "Hi Nitara's Fine Bakes!",
     "",
-    "I'd love something made just my way:",
+    "Here's what I have in mind:",
     "",
     idea.trim(),
     "",
-    "Could you let me know if that's possible and what it would cost? Thank you!",
+    "Can you make this, and what would it cost? Thank you!",
   ].join("\n");
 }
 
 export function defaultEnquiryMessage(): string {
-  return "Hi TheRootFood team! I was browsing your website and wanted to know more about what's fresh this week. Could you help me out?";
+  return "Hi TheRootFood team! I was looking at your website and wanted to ask what's available this week.";
 }
