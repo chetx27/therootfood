@@ -27,12 +27,12 @@ export const brownieItemId = (name: string, size: string) => `${PREFIX}brownie:$
 export const setItemId = (name: string, label: string) => `${PREFIX}set:${slug(name)}:${slug(label)}`;
 
 export const bakeryBasketItems: BakeryBasketItem[] = [
-  ...cakeMenu.flatMap((category) =>
-    category.items.map((cake) => ({
+  ...cakeMenu.flatMap(({ items }) =>
+    items.map((cake) => ({
       id: cakeItemId(cake.name),
       name: `${cake.name} cake`,
       price: cake.price,
-      image: cake.image ?? category.image,
+      image: cake.image,
     }))
   ),
   ...brownies.flatMap((brownie) =>

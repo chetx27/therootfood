@@ -37,9 +37,12 @@ describe("bakery basket catalog", () => {
     }
   });
 
-  it("gives kaju katli its own photo instead of the shared exotic cake", () => {
-    expect(getBakeryItem(cakeItemId("Kaju katli"))?.image).toBe("/bakery/cake-kaju-katli.webp");
-    expect(getBakeryItem(cakeItemId("Rasmalai"))?.image).toBe("/bakery/cake-exotic.webp");
+  it("gives every cake its own photo", () => {
+    const images = cakeMenu.flatMap((category) => category.items.map((cake) => getBakeryItem(cakeItemId(cake.name))?.image));
+    expect(images.every((image) => image?.startsWith("/bakery/cakes/"))).toBe(true);
+    expect(new Set(images).size).toBe(images.length);
+    expect(getBakeryItem(cakeItemId("Kaju katli"))?.image).toBe("/bakery/cakes/kaju-katli.webp");
+    expect(getBakeryItem(cakeItemId("Rasmalai"))?.image).not.toBe(getBakeryItem(cakeItemId("Kaju katli"))?.image);
   });
 
   it("labels an item with its size", () => {
