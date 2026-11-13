@@ -8,7 +8,7 @@ export interface BakeryBasketItem {
   option?: string;
   /** Rupees. The bakery only quotes in INR. */
   price: number;
-  /** Real product photo. Cakes have none. */
+  /** Menu photo. Cakes use the picture already shown on their menu card. */
   image?: string;
   /** What a cake is, and its main ingredient. */
   note?: string;
@@ -30,11 +30,12 @@ export const brownieItemId = (name: string, size: string) => `${PREFIX}brownie:$
 export const setItemId = (name: string, label: string) => `${PREFIX}set:${slug(name)}:${slug(label)}`;
 
 export const bakeryBasketItems: BakeryBasketItem[] = [
-  ...cakeMenu.flatMap(({ items }) =>
-    items.map((cake) => ({
+  ...cakeMenu.flatMap((category) =>
+    category.items.map((cake) => ({
       id: cakeItemId(cake.name),
       name: `${cake.name} cake`,
       price: cake.price,
+      image: category.image,
       note: cake.note,
     }))
   ),

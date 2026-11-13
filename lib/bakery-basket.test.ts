@@ -37,12 +37,13 @@ describe("bakery basket catalog", () => {
     }
   });
 
-  it("describes each cake without a photo", () => {
-    for (const cake of cakeMenu.flatMap((category) => category.items)) {
-      const item = getBakeryItem(cakeItemId(cake.name));
-      expect(item?.image).toBeUndefined();
-      expect(item?.note).toBe(cake.note);
-      expect(cake.note.length).toBeGreaterThan(0);
+  it("uses the menu card photo for each cake in the basket", () => {
+    for (const category of cakeMenu) {
+      for (const cake of category.items) {
+        const item = getBakeryItem(cakeItemId(cake.name));
+        expect(item?.image).toBe(category.image);
+        expect(item?.note).toBe(cake.note);
+      }
     }
   });
 
