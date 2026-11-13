@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { bakery, type BrownieItem } from "@/lib/bakery-menu";
-import { bakeryItemMessage, buildWhatsAppLink } from "@/lib/whatsapp";
-import { WhatsAppLogo } from "@/components/ui/whatsapp-logo";
+import { type BrownieItem } from "@/lib/bakery-menu";
+import { brownieItemId } from "@/lib/bakery-basket";
+import { BakeryBasketControl } from "@/components/bakery/add-to-basket";
 import { cn } from "@/lib/utils";
 
 export function BrownieCard({ item }: { item: BrownieItem }) {
@@ -41,18 +41,9 @@ export function BrownieCard({ item }: { item: BrownieItem }) {
             ))}
           </div>
 
-          <a
-            href={buildWhatsAppLink(bakeryItemMessage(item.name, `${option.size} (${option.pieces})`), bakery.whatsapp)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-3 flex h-10 items-center justify-between rounded-full bg-[#5a1f38] pl-4 pr-1.5 text-sm font-semibold text-white transition hover:bg-[#3d1426]"
-          >
-            <span className="inline-flex items-center gap-2">
-              <WhatsAppLogo className="h-4 w-4" />
-              Order
-            </span>
-            <span className="rounded-full bg-white/15 px-3 py-1 tabular-nums">₹{option.price.toLocaleString("en-IN")}</span>
-          </a>
+          <div className="mt-3">
+            <BakeryBasketControl itemId={brownieItemId(item.name, option.size)} />
+          </div>
         </div>
       </div>
     </article>

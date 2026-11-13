@@ -222,8 +222,8 @@ const intents: Intent[] = [
     id: "how-to-order",
     patterns: ["how to order", "how do i order", "how does ordering work", "place an order", "place order", "order online", "want to order", "i want to buy", "how to buy", "checkout", "basket", "cart", "add to cart", "purchase"],
     reply: () => ({
-      text: "Ordering is simple:\n\n1. Open the order page and tap \"Add to basket\" on anything you like.\n2. Open your basket and tap \"Enquire on WhatsApp\". You can send everything together, or ask about each item separately.\n3. We reply personally to confirm stock, delivery and the final total.\n4. Pay by UPI, bank transfer, or cash on delivery.\n\nNo card details or online payment needed.",
-      suggestions: ["How do I pay?", "Delivery charges?", "Where do you deliver?"],
+      text: "Ordering is simple:\n\n1. On the order page (farm products) or the Cakes & Bakes page (cakes and brownies), tap \"Add to basket\" on everything you want.\n2. Open your basket and send it on WhatsApp. Farm items go to TheRootFood; bakery items go to Nitara. You can send the whole basket together, or ask about one item.\n3. We reply personally to confirm stock, delivery and the final total.\n4. Pay by UPI, bank transfer, or cash on delivery.\n\nNo card details or online payment needed.",
+      suggestions: ["How do I pay?", "Delivery charges?", "Custom cakes"],
       action: ORDER,
     }),
   },
@@ -273,7 +273,7 @@ const intents: Intent[] = [
     id: "cakes",
     patterns: ["cake", "cakes", "birthday", "anniversary", "celebration", "eggless", "custom cake", "wedding", "party", "brownie", "brownies", "nitara", "bakery", "dessert"],
     reply: () => ({
-      text: "Our bakery, Nitara's Fine Bakes, makes cakes and brownies fresh to order! 🎂\n\n• 32 cake flavours, from classics like Blackforest & Red Velvet to Rasmalai, Kaju Katli and rich chocolate cakes (from ₹750)\n• 8 fudgy brownies, brownie tubs and gift boxes (from ₹300)\n• Eggless cake +₹150\n• Custom designs need at least 3 days notice\n\nSee the full menu and order on WhatsApp from the Cakes & Bakes page.",
+      text: "Our bakery, Nitara's Fine Bakes, makes cakes and brownies fresh to order! 🎂\n\n• 32 cake flavours, from classics like Blackforest & Red Velvet to Rasmalai, Kaju Katli and rich chocolate cakes (from ₹750)\n• 8 fudgy brownies, brownie tubs and gift boxes (from ₹300)\n• Eggless cake +₹150\n• Custom designs need at least 3 days notice\n\nOn the Cakes & Bakes page, add what you like to your basket and send it all to Nitara on WhatsApp in one message.",
       suggestions: ["How much is a cake?", "Brownie prices?"],
       action: CAKES,
     }),

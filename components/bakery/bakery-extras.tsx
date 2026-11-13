@@ -96,7 +96,7 @@ export function SignatureBakes({ withMenuLink = false }: { withMenuLink?: boolea
 
 const steps = [
   { icon: Sparkles, title: "Pick your bake", body: "Choose from the menu or describe your own idea." },
-  { icon: MessageCircleHeart, title: "Message on WhatsApp", body: "Tap any item and the order note is already typed for you." },
+  { icon: MessageCircleHeart, title: "Send your basket", body: "Add what you like, then send it all on WhatsApp. The order note is already typed for you." },
   { icon: CalendarHeart, title: "Confirm the date", body: "Give us 3 days for custom cakes. We'll confirm the price." },
   { icon: PackageCheck, title: "Fresh to your door", body: "We bake it and deliver it. The delivery charge depends on where you are." },
 ];

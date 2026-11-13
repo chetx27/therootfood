@@ -7,8 +7,9 @@ import {
   cakeMenu,
   cakeNotes,
 } from "@/lib/bakery-menu";
-import { bakeryItemMessage, buildWhatsAppLink } from "@/lib/whatsapp";
-import { WhatsAppLogo } from "@/components/ui/whatsapp-logo";
+import { cakeItemId } from "@/lib/bakery-basket";
+import { CakeRowBasketControl } from "@/components/bakery/add-to-basket";
+import { StickyBasketBar } from "@/components/cart/sticky-basket-bar";
 import { FadeIn } from "@/components/shared/fade-in";
 import { BrownieSets } from "@/components/bakery/brownie-sets";
 import { BrownieCard } from "@/components/bakery/brownie-card";
@@ -16,10 +17,6 @@ import { CakeMenuTabs } from "@/components/bakery/cake-menu-tabs";
 import { MobileCarousel } from "@/components/shared/mobile-carousel";
 
 const infoIcons = [Truck, Clock, CreditCard];
-
-function orderLink(item: string, option?: string) {
-  return buildWhatsAppLink(bakeryItemMessage(item, option), bakery.whatsapp);
-}
 
 function SectionTitle({ eyebrow, title, accent }: { eyebrow: string; title: string; accent: string }) {
   return (
@@ -66,22 +63,14 @@ export function BakeryMenu() {
                   </div>
                   <ul className="space-y-1">
                     {cat.items.map((item) => (
-                      <li key={item.name}>
-                        <a
-                          href={orderLink(`${item.name} cake`)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label={`Order ${item.name} cake on WhatsApp`}
-                          className="group -mx-2 flex items-center gap-3 rounded-lg px-2 py-1.5 transition-colors hover:bg-[#fbe4ec]/60"
-                        >
-                          <span className="text-[15px] text-slate-800">{item.name}</span>
-                          <span aria-hidden="true" className="mt-2 flex-1 border-b border-dotted border-[#e8b4c8]" />
-                          <span className="font-semibold tabular-nums text-[#b0537a]">₹{item.price.toLocaleString("en-IN")}</span>
-                          <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[#25D366]/40 bg-[#25D366]/10 px-2 py-1 text-[11px] font-semibold text-[#128C4B] transition group-hover:border-[#25D366] group-hover:bg-[#25D366] group-hover:text-white">
-                            <WhatsAppLogo className="h-3 w-3" />
-                            Order
-                          </span>
-                        </a>
+                      <li
+                        key={item.name}
+                        className="-mx-2 flex items-center gap-3 rounded-lg px-2 py-1.5 transition-colors hover:bg-[#fbe4ec]/60"
+                      >
+                        <span className="text-[15px] text-slate-800">{item.name}</span>
+                        <span aria-hidden="true" className="mt-2 flex-1 border-b border-dotted border-[#e8b4c8]" />
+                        <span className="font-semibold tabular-nums text-[#b0537a]">₹{item.price.toLocaleString("en-IN")}</span>
+                        <CakeRowBasketControl itemId={cakeItemId(item.name)} />
                       </li>
                     ))}
                   </ul>
@@ -99,7 +88,7 @@ export function BakeryMenu() {
               </p>
             ))}
           </div>
-          <p className="mt-3 text-center text-sm text-slate-500">Tap <span className="font-semibold text-[#128C4B]">Order</span> next to any cake and it goes straight to Nitara on WhatsApp.</p>
+          <p className="mt-3 text-center text-sm text-slate-500">Tap <span className="font-semibold text-[#5a1f38]">Add</span> next to the cakes you want, then send your whole basket to Nitara on WhatsApp in one message.</p>
         </div>
       </section>
 
@@ -113,6 +102,10 @@ export function BakeryMenu() {
             ))}
           </MobileCarousel>
 
+          <p className="mt-6 text-center text-sm text-slate-500">
+            Pick a size, tap <span className="font-semibold text-[#5a1f38]">Add to basket</span> on each brownie you want,
+            then send the whole order to Nitara in one WhatsApp message.
+          </p>
         </div>
       </section>
 
@@ -166,6 +159,8 @@ export function BakeryMenu() {
           </FadeIn>
         </div>
       </section>
+
+      <StickyBasketBar tone="bakery" />
     </>
   );
 }

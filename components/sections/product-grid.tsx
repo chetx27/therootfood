@@ -2,13 +2,13 @@
 
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Search, ShoppingBasket, X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { products } from "@/data/products";
 import { ProductCategory } from "@/types/product";
 import { ProductCard, categoryLabels } from "./product-card";
-import { CURRENCIES, formatAmount, type CurrencyCode } from "@/lib/currency";
+import { StickyBasketBar } from "@/components/cart/sticky-basket-bar";
+import { CURRENCIES, type CurrencyCode } from "@/lib/currency";
 import { useCurrency } from "@/lib/use-currency";
-import { basketTotal, useCart } from "@/lib/cart-context";
 import { cn } from "@/lib/utils";
 
 const categoryOrder = Object.keys(categoryLabels) as ProductCategory[];
@@ -17,8 +17,6 @@ export function ProductGrid() {
   const [activeCategory, setActiveCategory] = useState<ProductCategory | "all">("all");
   const [query, setQuery] = useState("");
   const { currency, setCurrencyCode } = useCurrency();
-  const { items, totalItems, setIsOpen } = useCart();
-  const total = basketTotal(items, currency);
 
   const counts = useMemo(() => {
     const map = new Map<ProductCategory, number>();
@@ -160,36 +158,7 @@ export function ProductGrid() {
         )}
       </div>
 
-      <AnimatePresence>
-        {totalItems > 0 && (
-          <motion.div
-            initial={{ y: 80, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 80, opacity: 0 }}
-            className="pointer-events-none fixed inset-x-0 bottom-4 z-40 flex justify-center pl-4 pr-20 sm:bottom-6 sm:px-24"
-          >
-            <button
-              type="button"
-              onClick={() => setIsOpen(true)}
-              className="pointer-events-auto flex w-full max-w-md items-center gap-4 rounded-full bg-slate-900 py-2 pl-2 pr-5 text-left text-white shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)] transition hover:bg-slate-800"
-            >
-              <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                <ShoppingBasket className="h-5 w-5" />
-                <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-white px-1 text-[11px] font-bold text-slate-900">
-                  {totalItems}
-                </span>
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block text-sm font-semibold">View basket</span>
-                <span className="block text-xs text-white/60">
-                  {total > 0 ? `About ${formatAmount(total, currency)} so far` : "Send it on WhatsApp when ready"}
-                </span>
-              </span>
-              <ArrowRight className="h-5 w-5 shrink-0" />
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <StickyBasketBar tone="farm" />
     </section>
   );
 }

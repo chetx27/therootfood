@@ -17,6 +17,36 @@ export function bakeryItemMessage(item: string, option?: string): string {
   ].join("\n");
 }
 
+export interface BakeryLine {
+  name: string;
+  /** Size or pack, e.g. "500 g, 8 pcs". */
+  option?: string;
+  quantity: number;
+  /** Unit price in rupees. */
+  price: number;
+}
+
+/** One WhatsApp note for everything the shopper picked from the bakery menu. */
+export function bakeryBasketMessage(lines: BakeryLine[]): string {
+  if (lines.length === 1 && lines[0].quantity === 1) return bakeryItemMessage(lines[0].name, lines[0].option);
+
+  const list = lines
+    .map((l, i) => `${i + 1}. ${l.quantity} × ${l.name}${l.option ? ` (${l.option})` : ""}`)
+    .join("\n");
+  const total = lines.reduce((sum, l) => sum + l.price * l.quantity, 0);
+
+  return [
+    "Hi Nitara's Fine Bakes!",
+    "",
+    "I saw your menu on TheRootFood and I'd like to order:",
+    "",
+    list,
+    "",
+    `The menu shows about ${formatInr(total)} for these.`,
+    "When can they be ready, and what's the delivery charge to my area? Thank you!",
+  ].join("\n");
+}
+
 export interface EnquiryLine {
   name: string;
   quantity: number;

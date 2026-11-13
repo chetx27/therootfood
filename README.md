@@ -17,16 +17,16 @@ There is no database and no admin panel. The catalog, bakery menu, FAQs and chat
 
 ## Features
 
-| Area             | What it does                                                                                                                                                                                  |
-| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Basket           | Add farm products on `/order`, adjust quantities, then send the whole basket in one WhatsApp message or ask about a single item. The basket is kept in `localStorage` (20 units per item).    |
-| Currency display | Prices can be shown in INR, USD, EUR, GBP or AED. The choice carries through the basket and into the WhatsApp message.                                                                        |
-| Bakery           | `/cakes` lists the Nitara's Fine Bakes menu (cakes, brownies, boxes, occasions). Bakery orders and custom cake requests open a WhatsApp chat with the bakery's own number.                    |
-| Enquiry forms    | The general contact form and the bulk (B2B) form post to `/api/contact`, which emails the enquiry to the business.                                                                            |
-| Chat assistant   | A rule-based assistant answers questions about products, prices, delivery, payment and cakes, and hands over to WhatsApp when it cannot help. It runs in the browser and calls no AI service. |
-| SEO              | Per-page metadata and canonical URLs, Open Graph and Twitter cards, `LocalBusiness`, `Product` and `FAQPage` JSON-LD, generated `sitemap.xml` and `robots.txt`.                               |
-| Analytics        | Cookieless page and event tracking with Plausible. See [ANALYTICS.md](ANALYTICS.md).                                                                                                          |
-| Mobile apps      | Capacitor shells for iOS and Android that load the production site. See [APP.md](APP.md).                                                                                                     |
+| Area             | What it does                                                                                                                                                                                     |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Basket           | Add farm products on `/order` and bakes on `/cakes`, adjust quantities, then send each kitchen's items in one WhatsApp message or ask about a single item. Kept in `localStorage` (20 per item). |
+| Currency display | Farm prices can be shown in INR, USD, EUR, GBP or AED. The choice carries through the basket and into the WhatsApp message. Bakery prices are always in rupees.                                  |
+| Bakery           | `/cakes` lists the Nitara's Fine Bakes menu (cakes, brownies, tubs, boxes). Bakery items go in the same basket but are sent to the bakery's own WhatsApp number, as are custom cake requests.    |
+| Enquiry forms    | The general contact form and the bulk (B2B) form post to `/api/contact`, which emails the enquiry to the business.                                                                               |
+| Chat assistant   | A rule-based assistant answers questions about products, prices, delivery, payment and cakes, and hands over to WhatsApp when it cannot help. It runs in the browser and calls no AI service.    |
+| SEO              | Per-page metadata and canonical URLs, Open Graph and Twitter cards, `LocalBusiness`, `Product` and `FAQPage` JSON-LD, generated `sitemap.xml` and `robots.txt`.                                  |
+| Analytics        | Cookieless page and event tracking with Plausible. See [ANALYTICS.md](ANALYTICS.md).                                                                                                             |
+| Mobile apps      | Capacitor shells for iOS and Android that load the production site. See [APP.md](APP.md).                                                                                                        |
 
 ## Tech stack
 
@@ -135,6 +135,7 @@ therootfood/
 ├── data/
 │   └── products.ts                Farm product catalog
 ├── lib/
+│   ├── bakery-basket.ts           Basket ids for every bakery menu line
 │   ├── bakery-menu.ts             Bakery contact details, menu and prices
 │   ├── business-info.ts           Business details used in JSON-LD
 │   ├── cart-context.tsx           Basket state and persistence

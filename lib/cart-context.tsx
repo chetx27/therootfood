@@ -4,8 +4,10 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import { Product } from "@/types/product";
 import { products } from "@/data/products";
 import { lineTotal, type CurrencyOption } from "@/lib/currency";
+import { getBakeryItem } from "@/lib/bakery-basket";
 
 export interface CartItem {
+  /** A farm product id, or a bakery basket id (see lib/bakery-basket.ts). */
   productId: string;
   quantity: number;
 }
@@ -35,7 +37,12 @@ export function isBasketable(product: Product | undefined): product is Product {
   return !!product && product.available !== false && product.priceType !== "custom-form";
 }
 
-/** Sum of the fixed-price items, in the currency the shopper is browsing in. */
+/** True for anything the basket can hold: a farm product or a bakery menu item. */
+function isKnownItem(productId: string): boolean {
+  return isBasketable(getProduct(productId)) || !!getBakeryItem(productId);
+}
+
+/** Sum of the fixed-price farm items, in the currency the shopper is browsing in. */
 export function basketTotal(items: CartItem[], currency: CurrencyOption): number {
   const sum = items.reduce((total, item) => {
     const product = getProduct(item.productId);
@@ -58,7 +65,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       if (stored) {
         const parsed: CartItem[] = JSON.parse(stored);
         // eslint-disable-next-line react-hooks/set-state-in-effect
-        setItems(parsed.filter((i) => isBasketable(getProduct(i.productId))));
+        setItems(parsed.filter((i) => isKnownItem(i.productId)));
       }
     } catch {
       // Corrupt storage — start fresh
@@ -75,8 +82,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const value = useMemo<CartContextValue>(() => {
     const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
     const totalAmount = items.reduce((sum, i) => {
-      const product = getProduct(i.productId);
-      return sum + (product?.price ?? 0) * i.quantity;
+      const price = getProduct(i.productId)?.price ?? getBakeryItem(i.productId)?.price ?? 0;
+      return sum + price * i.quantity;
     }, 0);
 
     return {

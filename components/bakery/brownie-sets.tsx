@@ -2,12 +2,11 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion } from "framer-motion";
-import { bakery, brownieAddOns, brownieBox, brownieTub } from "@/lib/bakery-menu";
-import { bakeryItemMessage, buildWhatsAppLink } from "@/lib/whatsapp";
+import { brownieAddOns, brownieBox, brownieTub } from "@/lib/bakery-menu";
+import { setItemId } from "@/lib/bakery-basket";
+import { BakeryBasketControl } from "@/components/bakery/add-to-basket";
 import { FadeIn } from "@/components/shared/fade-in";
 import { MobileCarousel } from "@/components/shared/mobile-carousel";
-import { WhatsAppLogo } from "@/components/ui/whatsapp-logo";
 import { cn } from "@/lib/utils";
 
 type SetItem = typeof brownieTub | typeof brownieBox;
@@ -73,29 +72,9 @@ function SetCard({ item, eyebrow, defaultIndex }: { item: SetItem; eyebrow: stri
           })}
         </div>
 
-        <a
-          href={buildWhatsAppLink(bakeryItemMessage(item.name, option.label), bakery.whatsapp)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-5 flex h-12 items-center justify-between rounded-full bg-[#25D366] pl-5 pr-1.5 text-sm font-semibold text-white transition hover:bg-[#1ebe5b] sm:mt-auto"
-        >
-          <span className="inline-flex items-center gap-2">
-            <WhatsAppLogo className="h-4 w-4" />
-            Order<span className="hidden min-[380px]:inline"> on WhatsApp</span>
-          </span>
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.span
-              key={option.price}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.15 }}
-              className="rounded-full bg-white px-3.5 py-1.5 tabular-nums text-[#128C4B]"
-            >
-              ₹{option.price.toLocaleString("en-IN")}
-            </motion.span>
-          </AnimatePresence>
-        </a>
+        <div className="mt-5 sm:mt-auto sm:pt-5">
+          <BakeryBasketControl itemId={setItemId(item.name, option.label)} size="md" />
+        </div>
       </div>
     </article>
   );
