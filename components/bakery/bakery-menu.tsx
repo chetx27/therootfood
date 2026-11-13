@@ -67,6 +67,11 @@ export function BakeryMenu() {
                         key={item.name}
                         className="-mx-2 flex items-center gap-3 rounded-lg px-2 py-1.5 transition-colors hover:bg-[#fbe4ec]/60"
                       >
+                        {item.image && (
+                          <span className="relative h-9 w-9 shrink-0 overflow-hidden rounded-md">
+                            <Image src={item.image} alt="" fill className="object-cover" sizes="36px" />
+                          </span>
+                        )}
                         <span className="text-[15px] text-slate-800">{item.name}</span>
                         <span aria-hidden="true" className="mt-2 flex-1 border-b border-dotted border-[#e8b4c8]" />
                         <span className="font-semibold tabular-nums text-[#b0537a]">₹{item.price.toLocaleString("en-IN")}</span>

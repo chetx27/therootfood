@@ -32,7 +32,7 @@ export const bakeryBasketItems: BakeryBasketItem[] = [
       id: cakeItemId(cake.name),
       name: `${cake.name} cake`,
       price: cake.price,
-      image: category.image,
+      image: cake.image ?? category.image,
     }))
   ),
   ...brownies.flatMap((brownie) =>

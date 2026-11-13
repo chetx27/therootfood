@@ -13,6 +13,8 @@ export const bakery = {
 export interface CakeItem {
   name: string;
   price: number;
+  /** Own photo. Cakes without one use their category image. */
+  image?: string;
 }
 
 export interface CakeCategory {
@@ -58,7 +60,7 @@ export const cakeMenu: CakeCategory[] = [
       { name: "Gulab jamun", price: 1150 },
       { name: "Rasagulla", price: 1150 },
       { name: "Motichoor laddu", price: 1250 },
-      { name: "Kaju katli", price: 1550 },
+      { name: "Kaju katli", price: 1550, image: "/bakery/cake-kaju-katli.webp" },
       { name: "Rosemilk", price: 1050 },
       { name: "Crunchy caramel", price: 1050 },
       { name: "Fresh fruit fantasy", price: 1250 },

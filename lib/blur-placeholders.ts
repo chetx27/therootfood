@@ -5,9 +5,9 @@ export const blurPlaceholders: Record<string, string> = {
   "/products/country-chicken.webp": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAACwAQCdASoKAAoABUB8JYwCdAD5YHyAAP5EeYFZ+6TQEXyG/xD3K9roOGpWjVVnhfgfa0b7FKztMzyg7AA=",
   "/products/country-eggs.webp": "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAACQAQCdASoKAAoABUB8JQBOgBs1zUAA/rZ2RBt6eZ8vwX7awFrz4UkepLVm3qy8sXj2fhbq/AWAAA==",
   "/products/goat-meat.webp": "data:image/webp;base64,UklGRjwAAABXRUJQVlA4IDAAAACwAQCdASoKAAUABUB8JQBOgBugk1WAAM47PBynHPxMoQu1ApqvdhpW6IfXodIxwAA=",
-  "/products/goat-milk-soap.webp": "data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAADwAQCdASoKAAoABUB8JZACdAEf5g72VAAA/tgTOOwab/X+ZM9i6477mr0H13zw4Amlm0026HBmUhqq8TWW2H96UOAAAA==",
+  "/products/goat-milk-soap.webp": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADwAQCdASoKAAgABUB8JYgCdADclnFepAAA/reo+C+SNO0YF9XOW408Hb3B7D1PpwBTOqJ9KEYaAkNMgAA=",
   "/products/ragi-flour.webp": "data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAACwAQCdASoKAAoABUB8JYgCdADZR/2AAP5oTVzXvZ1mRy+q7wIOjDoVrwBIeUKosmM+tK9jI4Fd1o6J9gFgAA==",
   "/products/tea-cakes.webp": "data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACwAQCdASoKAAUABUB8JZQC7ADW1uSAAP7iUmED0v2lrOwXyNDETf4UC6LSIAAA",
   "/products/vetiver-powder.webp": "data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAADwAQCdASoKAAoABUB8JZACdAEf5g72VAAA/tgTOOwab/X+ZM9i6477mr0H13zw4Amlm0026HBmUhqq8TWW2H96UOAAAA==",
-  "/products/vetiver-roots.webp": "data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAADwAQCdASoKAAoABUB8JZACdAEf5g72VAAA/tgTOOwab/X+ZM9i6477mr0H13zw4Amlm0026HBmUhqq8TWW2H96UOAAAA=="
+  "/products/vetiver-roots.webp": "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAAAQAgCdASoKAAgABUB8JYgCdAEXxG+g1HQAAP5ojUOyCuvbaGaGhHJ5eMkC2b3c9VW4mOz92PLoAA=="
 };

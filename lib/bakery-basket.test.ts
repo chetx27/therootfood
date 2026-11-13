@@ -37,6 +37,11 @@ describe("bakery basket catalog", () => {
     }
   });
 
+  it("gives kaju katli its own photo instead of the shared exotic cake", () => {
+    expect(getBakeryItem(cakeItemId("Kaju katli"))?.image).toBe("/bakery/cake-kaju-katli.webp");
+    expect(getBakeryItem(cakeItemId("Rasmalai"))?.image).toBe("/bakery/cake-exotic.webp");
+  });
+
   it("labels an item with its size", () => {
     const item = getBakeryItem(brownieItemId("Choco Chips Brownie", "500 g"))!;
     expect(bakeryItemLabel(item)).toBe("Choco Chips Brownie (500 g, 8 pcs)");
