@@ -37,12 +37,13 @@ describe("bakery basket catalog", () => {
     }
   });
 
-  it("gives every cake its own photo", () => {
-    const images = cakeMenu.flatMap((category) => category.items.map((cake) => getBakeryItem(cakeItemId(cake.name))?.image));
-    expect(images.every((image) => image?.startsWith("/bakery/cakes/"))).toBe(true);
-    expect(new Set(images).size).toBe(images.length);
-    expect(getBakeryItem(cakeItemId("Kaju katli"))?.image).toBe("/bakery/cakes/kaju-katli.webp");
-    expect(getBakeryItem(cakeItemId("Rasmalai"))?.image).not.toBe(getBakeryItem(cakeItemId("Kaju katli"))?.image);
+  it("describes each cake without a photo", () => {
+    for (const cake of cakeMenu.flatMap((category) => category.items)) {
+      const item = getBakeryItem(cakeItemId(cake.name));
+      expect(item?.image).toBeUndefined();
+      expect(item?.note).toBe(cake.note);
+      expect(cake.note.length).toBeGreaterThan(0);
+    }
   });
 
   it("labels an item with its size", () => {

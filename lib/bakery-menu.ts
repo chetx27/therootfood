@@ -13,8 +13,8 @@ export const bakery = {
 export interface CakeItem {
   name: string;
   price: number;
-  /** Photo shown beside this cake in the menu and in the basket. */
-  image: string;
+  /** What the cake is, and its main ingredient. Shown in the basket, not as a photo. */
+  note: string;
 }
 
 export interface CakeCategory {
@@ -32,22 +32,22 @@ export const cakeMenu: CakeCategory[] = [
     tagline: "The classics, layered with fresh cream.",
     image: "/bakery/cake-fruit.webp",
     items: [
-      { name: "Blackforest", price: 750, image: "/bakery/cakes/blackforest.webp" },
-      { name: "Whiteforest", price: 850, image: "/bakery/cakes/whiteforest.webp" },
-      { name: "Strawberry", price: 850, image: "/bakery/cakes/strawberry.webp" },
-      { name: "Butterscotch", price: 850, image: "/bakery/cakes/butterscotch.webp" },
-      { name: "Pineapple", price: 850, image: "/bakery/cakes/pineapple.webp" },
-      { name: "Mango", price: 850, image: "/bakery/cakes/mango.webp" },
-      { name: "Red velvet", price: 1050, image: "/bakery/cakes/red-velvet.webp" },
-      { name: "Blueberry", price: 950, image: "/bakery/cakes/blueberry.webp" },
-      { name: "Twin flavour", price: 950, image: "/bakery/cakes/twin-flavour.webp" },
-      { name: "Berry blast", price: 1050, image: "/bakery/cakes/berry-blast.webp" },
-      { name: "Pista", price: 1050, image: "/bakery/cakes/pista.webp" },
-      { name: "Irish coffee", price: 950, image: "/bakery/cakes/irish-coffee.webp" },
-      { name: "Blackcurrant", price: 850, image: "/bakery/cakes/blackcurrant.webp" },
-      { name: "Vancho", price: 850, image: "/bakery/cakes/vancho.webp" },
-      { name: "Litchi", price: 850, image: "/bakery/cakes/litchi.webp" },
-      { name: "Vanilla", price: 750, image: "/bakery/cakes/vanilla.webp" },
+      { name: "Blackforest", price: 750, note: "Chocolate sponge with cherries and cream" },
+      { name: "Whiteforest", price: 850, note: "White chocolate cream with cherries" },
+      { name: "Strawberry", price: 850, note: "Fresh cream cake with strawberries" },
+      { name: "Butterscotch", price: 850, note: "Caramel cake with butterscotch" },
+      { name: "Pineapple", price: 850, note: "Fresh cream cake with pineapple" },
+      { name: "Mango", price: 850, note: "Fresh cream cake with mango" },
+      { name: "Red velvet", price: 1050, note: "Red velvet sponge with cream cheese" },
+      { name: "Blueberry", price: 950, note: "Cream cake with blueberries" },
+      { name: "Twin flavour", price: 950, note: "Half vanilla, half chocolate" },
+      { name: "Berry blast", price: 1050, note: "Cream cake with mixed berries" },
+      { name: "Pista", price: 1050, note: "Pistachio cake" },
+      { name: "Irish coffee", price: 950, note: "Coffee cake with cream" },
+      { name: "Blackcurrant", price: 850, note: "Cream cake with blackcurrant" },
+      { name: "Vancho", price: 850, note: "Vanilla and chocolate together" },
+      { name: "Litchi", price: 850, note: "Cream cake with lychee" },
+      { name: "Vanilla", price: 750, note: "Classic vanilla sponge" },
     ],
   },
   {
@@ -56,14 +56,14 @@ export const cakeMenu: CakeCategory[] = [
     tagline: "Your favourite Indian sweets, baked into a cake.",
     image: "/bakery/cake-exotic.webp",
     items: [
-      { name: "Rasmalai", price: 1350, image: "/bakery/cakes/rasmalai.webp" },
-      { name: "Gulab jamun", price: 1150, image: "/bakery/cakes/gulab-jamun.webp" },
-      { name: "Rasagulla", price: 1150, image: "/bakery/cakes/rasagulla.webp" },
-      { name: "Motichoor laddu", price: 1250, image: "/bakery/cakes/motichoor-laddu.webp" },
-      { name: "Kaju katli", price: 1550, image: "/bakery/cakes/kaju-katli.webp" },
-      { name: "Rosemilk", price: 1050, image: "/bakery/cakes/rosemilk.webp" },
-      { name: "Crunchy caramel", price: 1050, image: "/bakery/cakes/crunchy-caramel.webp" },
-      { name: "Fresh fruit fantasy", price: 1250, image: "/bakery/cakes/fresh-fruit-fantasy.webp" },
+      { name: "Rasmalai", price: 1350, note: "Saffron milk cake with rasmalai" },
+      { name: "Gulab jamun", price: 1150, note: "Milk cake topped with gulab jamun" },
+      { name: "Rasagulla", price: 1150, note: "Milk cake topped with rasgulla" },
+      { name: "Motichoor laddu", price: 1250, note: "Saffron cake topped with motichoor ladoo" },
+      { name: "Kaju katli", price: 1550, note: "Cashew cake topped with kaju katli" },
+      { name: "Rosemilk", price: 1050, note: "Rose milk cake" },
+      { name: "Crunchy caramel", price: 1050, note: "Caramel cake with crunchy praline" },
+      { name: "Fresh fruit fantasy", price: 1250, note: "Cream cake with fresh fruit" },
     ],
   },
   {
@@ -72,14 +72,14 @@ export const cakeMenu: CakeCategory[] = [
     tagline: "For when it has to be chocolate.",
     image: "/bakery/cake-chocolate.webp",
     items: [
-      { name: "Chocolate truffle", price: 1050, image: "/bakery/cakes/chocolate-truffle.webp" },
-      { name: "Chocolate KitKat", price: 1250, image: "/bakery/cakes/chocolate-wafer.webp" },
-      { name: "Chocolate pastry", price: 850, image: "/bakery/cakes/chocolate-pastry.webp" },
-      { name: "Cookie & cream", price: 950, image: "/bakery/cakes/cookie-cream.webp" },
-      { name: "Death by chocolate", price: 1350, image: "/bakery/cakes/death-by-chocolate.webp" },
-      { name: "White chocolate truffle", price: 1250, image: "/bakery/cakes/white-chocolate-truffle.webp" },
-      { name: "Chocolate mocha", price: 1250, image: "/bakery/cakes/chocolate-mocha.webp" },
-      { name: "Ferrero Rocher", price: 1350, image: "/bakery/cakes/hazelnut-chocolate.webp" },
+      { name: "Chocolate truffle", price: 1050, note: "Dark chocolate truffle cake" },
+      { name: "Chocolate KitKat", price: 1250, note: "Chocolate cake with wafer fingers" },
+      { name: "Chocolate pastry", price: 850, note: "Chocolate cream pastry cake" },
+      { name: "Cookie & cream", price: 950, note: "Cookies and cream cake" },
+      { name: "Death by chocolate", price: 1350, note: "Layered dark chocolate cake" },
+      { name: "White chocolate truffle", price: 1250, note: "White chocolate truffle cake" },
+      { name: "Chocolate mocha", price: 1250, note: "Chocolate and coffee cake" },
+      { name: "Ferrero Rocher", price: 1350, note: "Chocolate hazelnut cake" },
     ],
   },
 ];
@@ -148,9 +148,9 @@ export const bakeryInfo = [
 ];
 
 export const signatureBakes = [
-  { name: "Red velvet", tag: "Most loved", price: 1050, image: "/bakery/cakes/red-velvet.webp", note: "Velvety sponge, cream cheese frosting." },
-  { name: "Death by chocolate", tag: "For chocoholics", price: 1350, image: "/bakery/cakes/death-by-chocolate.webp", note: "Layers of fudge, ganache and sponge." },
-  { name: "Rasmalai", tag: "Exotic pick", price: 1350, image: "/bakery/cakes/rasmalai.webp", note: "Saffron, pistachio and soft rasmalai." },
+  { name: "Red velvet", tag: "Most loved", price: 1050, image: "/bakery/cake-celebration.webp", note: "Velvety sponge, cream cheese frosting." },
+  { name: "Death by chocolate", tag: "For chocoholics", price: 1350, image: "/bakery/cake-chocolate.webp", note: "Layers of fudge, ganache and sponge." },
+  { name: "Rasmalai", tag: "Exotic pick", price: 1350, image: "/bakery/cake-exotic.webp", note: "Saffron, pistachio and soft rasmalai." },
   { name: "Lotus Biscoff Brownie", tag: "Bestseller", price: 380, image: "/bakery/brownie-lotus-biscoff.webp", note: "Caramel Biscoff on a fudgy base." },
 ];
 

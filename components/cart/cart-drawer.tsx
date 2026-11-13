@@ -27,12 +27,14 @@ interface Line {
   id: string;
   seller: Seller;
   name: string;
-  /** Farm: pack size ("per kg"). Bakery: size or box ("500 g, 8 pcs"). */
+  /** Farm: pack size ("per kg"). Brownie: size or box ("500 g, 8 pcs"). */
   detail?: string;
+  /** Cakes: what it is and the main ingredient. No photo. */
+  note?: string;
   /** Rupees. Missing for farm items that are priced on request. */
   price?: number;
   quantity: number;
-  image: string;
+  image?: string;
   imageAlt: string;
   /** Used for analytics only. */
   ref: string;
@@ -73,6 +75,7 @@ function toLine(productId: string, quantity: number): Line | undefined {
       seller: "bakery",
       name: bake.name,
       detail: bake.option,
+      note: bake.note,
       price: bake.price,
       quantity,
       image: bake.image,
@@ -88,7 +91,7 @@ function farmEnquiryLine(line: Line) {
 }
 
 function bakeryEnquiryLine(line: Line) {
-  return { name: line.name, option: line.detail, quantity: line.quantity, price: line.price ?? 0 };
+  return { name: line.name, option: line.detail ?? line.note, quantity: line.quantity, price: line.price ?? 0 };
 }
 
 function singleLink(line: Line, currency: CurrencyOption): string {
@@ -222,17 +225,21 @@ export function CartDrawer() {
                       const priced = line.price != null;
                       return (
                         <li key={line.id} className="flex gap-3 sm:gap-4">
-                          <div className="relative h-16 w-16 sm:h-20 sm:w-20 rounded-xl overflow-hidden bg-muted/40 shrink-0 border border-border/50">
-                            <Image src={line.image} alt={line.imageAlt} fill className="object-cover" sizes="80px" />
-                          </div>
+                          {line.image && (
+                            <div className="relative h-16 w-16 sm:h-20 sm:w-20 rounded-xl overflow-hidden bg-muted/40 shrink-0 border border-border/50">
+                              <Image src={line.image} alt={line.imageAlt} fill className="object-cover" sizes="80px" />
+                            </div>
+                          )}
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-sm leading-snug line-clamp-2">{line.name}</p>
                             <p className="text-xs text-muted-foreground mt-0.5">
-                              {line.seller === "bakery"
-                                ? [line.detail, formatInr(line.price!)].filter(Boolean).join(" · ")
-                                : priced
-                                  ? `${formatMoney(line.price!, group.currency)} ${line.detail ?? ""}`
-                                  : "Price on request"}
+                              {line.note
+                                ? line.note
+                                : line.seller === "bakery"
+                                  ? [line.detail, formatInr(line.price!)].filter(Boolean).join(" · ")
+                                  : priced
+                                    ? `${formatMoney(line.price!, group.currency)} ${line.detail ?? ""}`
+                                    : "Price on request"}
                             </p>
                             <div className="flex flex-wrap items-center gap-3 mt-2">
                               <div className="flex items-center border border-border rounded-full">

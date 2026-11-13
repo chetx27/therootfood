@@ -8,7 +8,10 @@ export interface BakeryBasketItem {
   option?: string;
   /** Rupees. The bakery only quotes in INR. */
   price: number;
-  image: string;
+  /** Real product photo. Cakes have none. */
+  image?: string;
+  /** What a cake is, and its main ingredient. */
+  note?: string;
 }
 
 function slug(text: string): string {
@@ -32,7 +35,7 @@ export const bakeryBasketItems: BakeryBasketItem[] = [
       id: cakeItemId(cake.name),
       name: `${cake.name} cake`,
       price: cake.price,
-      image: cake.image,
+      note: cake.note,
     }))
   ),
   ...brownies.flatMap((brownie) =>
