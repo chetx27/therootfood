@@ -3,7 +3,7 @@
 import { WhatsAppLogo } from "@/components/ui/whatsapp-logo";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "react";
 import { Minus, Plus, ShoppingBasket, Trash2 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { buttonVariants } from "@/components/ui/button";
@@ -15,32 +15,6 @@ import { useCurrency } from "@/lib/use-currency";
 import { bakery } from "@/lib/bakery-menu";
 import { getBakeryItem } from "@/lib/bakery-basket";
 import { bakeryBasketMessage, basketEnquiryMessage, buildWhatsAppLink } from "@/lib/whatsapp";
-
-const PENDING_WHATSAPP_KEY = "therootfood-basket-whatsapp";
-
-function queueRemainingWhatsApp(urls: string[]) {
-  sessionStorage.setItem(PENDING_WHATSAPP_KEY, JSON.stringify({ urls, startedAt: Date.now() }));
-}
-
-function consumeNextWhatsApp(): string | null {
-  try {
-    const raw = sessionStorage.getItem(PENDING_WHATSAPP_KEY);
-    if (!raw) return null;
-    const data = JSON.parse(raw) as { urls?: unknown; startedAt?: unknown };
-    const fresh = typeof data.startedAt === "number" && Date.now() - data.startedAt < 5 * 60 * 1000;
-    const urls = Array.isArray(data.urls) ? data.urls.filter((url): url is string => typeof url === "string" && url.length > 0) : [];
-    if (!fresh || urls.length === 0) {
-      sessionStorage.removeItem(PENDING_WHATSAPP_KEY);
-      return null;
-    }
-    const [next, ...rest] = urls;
-    if (rest.length === 0) sessionStorage.removeItem(PENDING_WHATSAPP_KEY);
-    else sessionStorage.setItem(PENDING_WHATSAPP_KEY, JSON.stringify({ urls: rest, startedAt: data.startedAt }));
-    return next;
-  } catch {
-    return null;
-  }
-}
 
 type Seller = "farm" | "bakery";
 
@@ -168,7 +142,6 @@ export function CartDrawer() {
   const { currency } = useCurrency();
   const track = useAnalytics();
   const isPhone = useIsPhone();
-  const skipReturn = useRef(false);
 
   const lines = items.map((item) => toLine(item.productId, item.quantity)).filter((l): l is Line => !!l);
   const groups = (["farm", "bakery"] as const)
@@ -184,37 +157,6 @@ export function CartDrawer() {
     setIsOpen(open);
   }
 
-  // After the first kitchen's chat, open the next one without another basket button.
-  useEffect(() => {
-    let hiddenAt = 0;
-    function resume() {
-      if (skipReturn.current) return;
-      const url = consumeNextWhatsApp();
-      if (url) window.location.assign(url);
-    }
-    function onVisibility() {
-      if (document.visibilityState === "hidden") {
-        hiddenAt = Date.now();
-        skipReturn.current = false;
-        return;
-      }
-      // Ignore the brief hide when the phone shows the app chooser.
-      if (hiddenAt === 0 || Date.now() - hiddenAt < 1500) return;
-      hiddenAt = 0;
-      resume();
-    }
-    function onPageShow(event: PageTransitionEvent) {
-      if (!event.persisted || skipReturn.current) return;
-      resume();
-    }
-    document.addEventListener("visibilitychange", onVisibility);
-    window.addEventListener("pageshow", onPageShow);
-    return () => {
-      document.removeEventListener("visibilitychange", onVisibility);
-      window.removeEventListener("pageshow", onPageShow);
-    };
-  }, []);
-
   function trackSend(group: Group) {
     track("whatsapp_enquiry_sent", {
       mode: "basket",
@@ -227,20 +169,10 @@ export function CartDrawer() {
   const farmGroup = groups.find((group) => group.seller === "farm");
   const bakeryGroup = groups.find((group) => group.seller === "bakery");
 
-  function openNitaraAsWell() {
-    groups.forEach(trackSend);
-    if (!bakeryGroup) return;
-    // Same tap as the farm link. A phone often keeps only the first WhatsApp chat.
-    const popup = window.open(bakeryGroup.sendAllLink, "_blank", "noopener,noreferrer");
-    if (popup) return;
-    queueRemainingWhatsApp([bakeryGroup.sendAllLink]);
-    skipReturn.current = true;
-  }
-
   function description(): string {
     if (totalItems === 0) return "Nothing here yet.";
     const count = `${totalItems} item${totalItems > 1 ? "s" : ""}`;
-    if (split) return `${count} from two kitchens. One tap sends each kitchen its own order.`;
+    if (split) return `${count} from two kitchens. Ask the farm and the bakery separately.`;
     if (only?.seller === "bakery") return `${count}. Nitara confirms everything with you on WhatsApp.`;
     return `${count}${farmAbroad ? `, priced in ${currency.code}` : ""}. We confirm everything with you on WhatsApp.`;
   }
@@ -435,23 +367,32 @@ export function CartDrawer() {
               ))}
             </div>
             <p className="text-xs text-muted-foreground">
-              One tap. The farm gets the farm order and Nitara gets the bakery order. Nothing is charged on the website.
+              These are two different kitchens, so each order has its own WhatsApp. Nothing is charged on the website.
             </p>
             {farmGroup && (
-            <a
-              href={farmGroup.sendAllLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={openNitaraAsWell}
-              className={cn(buttonVariants(), sendButton, "h-auto min-h-[48px] w-full px-4 py-3 text-sm sm:min-h-[52px] sm:text-base")}
-            >
-              <WhatsAppLogo className="h-5 w-5 shrink-0" />
-              Send both orders
-            </a>
+              <a
+                href={farmGroup.sendAllLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackSend(farmGroup)}
+                className={cn(buttonVariants(), sendButton, "h-auto min-h-[48px] w-full px-4 py-3 text-sm sm:min-h-[52px] sm:text-base")}
+              >
+                <WhatsAppLogo className="h-5 w-5 shrink-0" />
+                Ask the farm
+              </a>
             )}
-            <p className="text-center text-[11px] text-muted-foreground">
-              WhatsApp opens the farm chat first. Nitara&apos;s chat opens on its own when you come back.
-            </p>
+            {bakeryGroup && (
+              <a
+                href={bakeryGroup.sendAllLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackSend(bakeryGroup)}
+                className={cn(buttonVariants(), sendButton, "h-auto min-h-[48px] w-full px-4 py-3 text-sm sm:min-h-[52px] sm:text-base")}
+              >
+                <WhatsAppLogo className="h-5 w-5 shrink-0" />
+                Ask the bakery
+              </a>
+            )}
           </div>
         )}
       </SheetContent>

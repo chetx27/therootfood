@@ -22,7 +22,7 @@ export function StickyBasketBar({ tone = "farm" }: { tone?: "farm" | "bakery" })
     if (bakeryOnly && totalAmount > 0) return `About ${formatInr(totalAmount)} so far · send to Nitara when ready`;
     if (farmOnly && farmTotal > 0) return `About ${formatAmount(farmTotal, currency)} so far`;
     if (farmOnly) return "Send it on WhatsApp when ready";
-    if (items.length > 0) return "One tap sends both orders on WhatsApp";
+    if (items.length > 0) return "Ask the farm and the bakery separately";
     return "Send it on WhatsApp when ready";
   })();
 

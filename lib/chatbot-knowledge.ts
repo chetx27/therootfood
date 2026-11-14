@@ -222,7 +222,7 @@ const intents: Intent[] = [
     id: "how-to-order",
     patterns: ["how to order", "how do i order", "how does ordering work", "place an order", "place order", "order online", "want to order", "i want to buy", "how to buy", "checkout", "basket", "cart", "add to cart", "purchase"],
     reply: () => ({
-      text: "Ordering is simple:\n\n1. On the order page (farm products) or the Cakes & Bakes page (cakes and brownies), tap \"Add to basket\" on everything you want.\n2. Open your basket and send it on WhatsApp. Farm items go to TheRootFood; bakery items go to Nitara. If you have both, one tap starts chats for both kitchens.\n3. We reply personally to confirm stock, delivery and the final total.\n4. Pay by UPI, bank transfer, or cash on delivery.\n\nNo card details or online payment needed.",
+      text: "Ordering is simple:\n\n1. On the order page (farm products) or the Cakes & Bakes page (cakes and brownies), tap \"Add to basket\" on everything you want.\n2. Open your basket and send it on WhatsApp. Farm items go to TheRootFood; bakery items go to Nitara. If you have both, tap Ask the farm and Ask the bakery separately.\n3. We reply personally to confirm stock, delivery and the final total.\n4. Pay by UPI, bank transfer, or cash on delivery.\n\nNo card details or online payment needed.",
       suggestions: ["How do I pay?", "Delivery charges?", "Custom cakes"],
       action: ORDER,
     }),
