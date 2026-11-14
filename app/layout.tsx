@@ -15,6 +15,9 @@ const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-jakart
 
 export const viewport: Viewport = {
   themeColor: "#2D5C42",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export const metadata: Metadata = {

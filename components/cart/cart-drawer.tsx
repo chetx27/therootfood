@@ -3,7 +3,9 @@
 import { WhatsAppLogo } from "@/components/ui/whatsapp-logo";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Minus, Plus, ShoppingBasket, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -17,6 +19,7 @@ import {
   bakeryBasketMessage,
   basketEnquiryMessage,
   buildWhatsAppLink,
+  openWhatsAppLinks,
   singleItemEnquiryMessage,
 } from "@/lib/whatsapp";
 
@@ -51,6 +54,20 @@ interface Group {
   totalInr: number;
   hasUnpriced: boolean;
   sendAllLink: string;
+}
+
+function subscribePhone(cb: () => void) {
+  const mq = window.matchMedia("(max-width: 639px)");
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+}
+
+function useIsPhone() {
+  return useSyncExternalStore(
+    subscribePhone,
+    () => window.matchMedia("(max-width: 639px)").matches,
+    () => false
+  );
 }
 
 function toLine(productId: string, quantity: number): Line | undefined {
@@ -130,6 +147,10 @@ function paymentNote(group: Group): string {
     : "Nothing is charged on the website. We confirm stock, the delivery charge and the final amount on WhatsApp, and then you pay by UPI, bank transfer or cash on delivery.";
 }
 
+function kitchenLabel(seller: Seller): string {
+  return seller === "farm" ? "the farm" : "Nitara";
+}
+
 const sendButton =
   "whitespace-normal rounded-full bg-[#25D366] text-center text-white hover:bg-[#1ebe5b] gap-2 shadow-[0_10px_25px_-10px_rgba(37,211,102,0.8)]";
 
@@ -137,6 +158,9 @@ export function CartDrawer() {
   const { items, isOpen, setIsOpen, setQuantity, removeItem, totalItems } = useCart();
   const { currency } = useCurrency();
   const track = useAnalytics();
+  const isPhone = useIsPhone();
+  const [pendingLinks, setPendingLinks] = useState<{ link: string; seller: Seller }[]>([]);
+  const pendingNudgeSent = useRef(false);
 
   const lines = items.map((item) => toLine(item.productId, item.quantity)).filter((l): l is Line => !!l);
   const groups = (["farm", "bakery"] as const)
@@ -147,6 +171,34 @@ export function CartDrawer() {
   const split = groups.length > 1;
   const only = split ? undefined : groups[0];
   const farmAbroad = currency.code !== "INR" && groups.some((g) => g.seller === "farm");
+  const pending = pendingLinks[0];
+
+  function handleOpenChange(open: boolean) {
+    if (!open) {
+      setPendingLinks([]);
+      pendingNudgeSent.current = false;
+    }
+    setIsOpen(open);
+  }
+
+  // When the shopper returns from the first WhatsApp chat, nudge the second kitchen.
+  useEffect(() => {
+    if (!pending) {
+      pendingNudgeSent.current = false;
+      return;
+    }
+    const seller = pending.seller;
+    function onVisible() {
+      if (document.visibilityState !== "visible" || pendingNudgeSent.current) return;
+      pendingNudgeSent.current = true;
+      toast.message(`Still need to send your order to ${kitchenLabel(seller)}`, {
+        description: "Tap the green button in your basket — one more chat, then you’re done.",
+        duration: 6000,
+      });
+    }
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, [pending]);
 
   function trackSend(group: Group) {
     track("whatsapp_enquiry_sent", {
@@ -157,46 +209,83 @@ export function CartDrawer() {
     });
   }
 
+  function sendAllGroups() {
+    groups.forEach(trackSend);
+    const blocked = openWhatsAppLinks(groups.map((g) => g.sendAllLink));
+    if (blocked.length === 0) {
+      setPendingLinks([]);
+      return;
+    }
+    const queued = blocked
+      .map((link) => groups.find((g) => g.sendAllLink === link))
+      .filter((g): g is Group => !!g)
+      .map((g) => ({ link: g.sendAllLink, seller: g.seller }));
+    setPendingLinks(queued);
+    toast.message("Opening both kitchens", {
+      description: `WhatsApp opened for ${kitchenLabel(groups[0].seller)}. Come back and tap once for ${kitchenLabel(queued[0].seller)}.`,
+      duration: 5000,
+    });
+  }
+
+  function sendPending() {
+    if (!pending) return;
+    const group = groups.find((g) => g.seller === pending.seller);
+    if (group) trackSend(group);
+    openWhatsAppLinks([pending.link]);
+    setPendingLinks((prev) => prev.slice(1));
+  }
+
   function description(): string {
     if (totalItems === 0) return "Nothing here yet.";
     const count = `${totalItems} item${totalItems > 1 ? "s" : ""}`;
-    if (split) return `${count} from two kitchens. Each one confirms its order with you on WhatsApp.`;
+    if (split) return `${count} from two kitchens. One tap sends a WhatsApp to each.`;
     if (only?.seller === "bakery") return `${count}. Nitara confirms everything with you on WhatsApp.`;
     return `${count}${farmAbroad ? `, priced in ${currency.code}` : ""}. We confirm everything with you on WhatsApp.`;
   }
 
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetContent side="right" className="w-full data-[side=right]:w-full data-[side=right]:sm:max-w-md gap-0 p-0 flex flex-col">
-        <SheetHeader className="px-4 pt-6 pb-4 border-b border-border sm:px-6">
-          <SheetTitle className="font-heading font-semibold text-2xl flex items-center gap-2">
+    <Sheet open={isOpen} onOpenChange={handleOpenChange}>
+      <SheetContent
+        side={isPhone ? "bottom" : "right"}
+        className={cn(
+          "flex flex-col gap-0 overflow-hidden p-0",
+          isPhone
+            ? "inset-x-0 bottom-0 h-[min(92dvh,100%)] max-h-[92dvh] w-full max-w-none rounded-t-3xl border-x-0 border-b-0 data-[side=bottom]:h-[min(92dvh,100%)]"
+            : "h-dvh max-h-dvh w-full data-[side=right]:w-full data-[side=right]:sm:max-w-md"
+        )}
+      >
+        <SheetHeader className="shrink-0 border-b border-border px-4 pb-3 pt-4 sm:px-6 sm:pb-4 sm:pt-6">
+          {isPhone && (
+            <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-border" aria-hidden />
+          )}
+          <SheetTitle className="flex items-center gap-2 font-heading text-xl font-semibold sm:text-2xl">
             <ShoppingBasket className="h-5 w-5 text-primary" />
             Your Basket
           </SheetTitle>
-          <SheetDescription className="text-muted-foreground text-sm">{description()}</SheetDescription>
+          <SheetDescription className="text-sm text-muted-foreground">{description()}</SheetDescription>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto px-4 py-4 sm:px-6">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-3 sm:px-6 sm:py-4">
           {groups.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-center gap-3 py-16">
-              <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
+            <div className="flex h-full flex-col items-center justify-center gap-3 py-12 text-center sm:py-16">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
                 <ShoppingBasket className="h-7 w-7 text-primary" />
               </div>
               <p className="font-medium text-foreground">Your basket is empty</p>
-              <p className="text-sm text-muted-foreground max-w-[260px]">
+              <p className="max-w-[260px] text-sm text-muted-foreground">
                 Pick what you like, then send it to us on WhatsApp, all together or one by one.
               </p>
               <div className="mt-2 flex flex-wrap justify-center gap-2">
                 <Link
                   href="/order"
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => handleOpenChange(false)}
                   className={cn(buttonVariants({ variant: "outline" }), "rounded-full")}
                 >
                   Browse Products
                 </Link>
                 <Link
                   href="/cakes"
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => handleOpenChange(false)}
                   className={cn(buttonVariants({ variant: "outline" }), "rounded-full")}
                 >
                   Cakes &amp; Bakes
@@ -204,11 +293,11 @@ export function CartDrawer() {
               </div>
             </div>
           ) : (
-            <div className="space-y-7">
+            <div className="space-y-6 sm:space-y-7">
               {groups.map((group) => (
                 <section key={group.seller} aria-label={group.title}>
                   {(split || group.seller === "bakery") && (
-                    <div className="mb-4">
+                    <div className="mb-3 sm:mb-4">
                       <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                         {group.title}
                       </h3>
@@ -220,19 +309,19 @@ export function CartDrawer() {
                       )}
                     </div>
                   )}
-                  <ul className="space-y-5">
+                  <ul className="space-y-4 sm:space-y-5">
                     {group.lines.map((line) => {
                       const priced = line.price != null;
                       return (
-                        <li key={line.id} className="flex gap-3 sm:gap-4">
+                        <li key={line.id} className="flex gap-3">
                           {line.image && (
-                            <div className="relative h-16 w-16 sm:h-20 sm:w-20 rounded-xl overflow-hidden bg-muted/40 shrink-0 border border-border/50">
+                            <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-border/50 bg-muted/40 sm:h-20 sm:w-20">
                               <Image src={line.image} alt={line.imageAlt} fill className="object-cover" sizes="80px" />
                             </div>
                           )}
-                          <div className="flex-1 min-w-0">
-                            <p className="font-medium text-sm leading-snug line-clamp-2">{line.name}</p>
-                            <p className="text-xs text-muted-foreground mt-0.5">
+                          <div className="min-w-0 flex-1">
+                            <p className="line-clamp-2 text-sm font-medium leading-snug">{line.name}</p>
+                            <p className="mt-0.5 text-xs text-muted-foreground">
                               {line.note
                                 ? line.note
                                 : line.seller === "bakery"
@@ -241,11 +330,11 @@ export function CartDrawer() {
                                     ? `${formatMoney(line.price!, group.currency)} ${line.detail ?? ""}`
                                     : "Price on request"}
                             </p>
-                            <div className="flex flex-wrap items-center gap-3 mt-2">
-                              <div className="flex items-center border border-border rounded-full">
+                            <div className="mt-2 flex flex-wrap items-center gap-2.5 sm:gap-3">
+                              <div className="flex items-center rounded-full border border-border">
                                 <button
                                   aria-label={`Decrease quantity of ${line.name}`}
-                                  className="h-8 w-8 flex items-center justify-center text-muted-foreground hover:text-foreground"
+                                  className="flex h-8 w-8 items-center justify-center text-muted-foreground hover:text-foreground"
                                   onClick={() => setQuantity(line.id, line.quantity - 1)}
                                 >
                                   <Minus className="h-3.5 w-3.5" />
@@ -253,7 +342,7 @@ export function CartDrawer() {
                                 <span className="w-6 text-center text-sm font-medium tabular-nums">{line.quantity}</span>
                                 <button
                                   aria-label={`Increase quantity of ${line.name}`}
-                                  className="h-8 w-8 flex items-center justify-center text-muted-foreground hover:text-foreground"
+                                  className="flex h-8 w-8 items-center justify-center text-muted-foreground hover:text-foreground"
                                   onClick={() => setQuantity(line.id, line.quantity + 1)}
                                 >
                                   <Plus className="h-3.5 w-3.5" />
@@ -261,7 +350,7 @@ export function CartDrawer() {
                               </div>
                               <button
                                 aria-label={`Remove ${line.name} from basket`}
-                                className="text-muted-foreground hover:text-destructive transition-colors"
+                                className="text-muted-foreground transition-colors hover:text-destructive"
                                 onClick={() => removeItem(line.id)}
                               >
                                 <Trash2 className="h-4 w-4" />
@@ -273,7 +362,7 @@ export function CartDrawer() {
                                 onClick={() =>
                                   track("whatsapp_enquiry_sent", { mode: "single", seller: line.seller, product: line.ref })
                                 }
-                                className="inline-flex items-center gap-1 rounded-full border border-forest/25 px-2.5 py-1 text-xs font-medium text-forest hover:bg-forest hover:text-white transition-colors"
+                                className="inline-flex items-center gap-1 rounded-full border border-forest/25 px-2.5 py-1 text-xs font-medium text-forest transition-colors hover:bg-forest hover:text-white"
                               >
                                 <WhatsAppLogo className="h-3.5 w-3.5" />
                                 Ask separately
@@ -282,7 +371,7 @@ export function CartDrawer() {
                           </div>
                           {priced && (
                             <div className="shrink-0 text-right">
-                              <p className="font-semibold text-sm tabular-nums">
+                              <p className="text-sm font-semibold tabular-nums">
                                 {formatAmount(lineTotal(line.price!, line.quantity, group.currency), group.currency)}
                               </p>
                               {group.currency.code !== "INR" && (
@@ -303,14 +392,14 @@ export function CartDrawer() {
         </div>
 
         {only && (
-          <div className="border-t border-border px-4 pt-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] space-y-4 bg-surface sm:px-6">
+          <div className="shrink-0 space-y-3 border-t border-border bg-surface px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 sm:space-y-4 sm:px-6 sm:pt-5 sm:pb-[max(1.25rem,env(safe-area-inset-bottom))]">
             <div className="flex items-start justify-between gap-3">
-              <span className="shrink-0 pt-1 text-muted-foreground text-sm">Estimated total</span>
+              <span className="shrink-0 pt-1 text-sm text-muted-foreground">Estimated total</span>
               <div className="text-right">
-                <p className="font-heading text-xl font-semibold tabular-nums">
+                <p className="font-heading text-lg font-semibold tabular-nums sm:text-xl">
                   {formatAmount(only.total, only.currency)}
                   {only.hasUnpriced && (
-                    <span className="text-xs font-sans font-normal text-muted-foreground"> + items on request</span>
+                    <span className="font-sans text-xs font-normal text-muted-foreground"> + items on request</span>
                   )}
                 </p>
                 {only.currency.code !== "INR" && only.totalInr > 0 && (
@@ -324,7 +413,7 @@ export function CartDrawer() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackSend(only)}
-              className={cn(buttonVariants(), sendButton, "h-auto w-full min-h-[52px] px-4 py-3 text-sm sm:text-base")}
+              className={cn(buttonVariants(), sendButton, "h-auto min-h-[48px] w-full px-4 py-3 text-sm sm:min-h-[52px] sm:text-base")}
             >
               <WhatsAppLogo className="h-5 w-5 shrink-0" />
               {only.lines.length > 1 ? (
@@ -345,32 +434,50 @@ export function CartDrawer() {
         )}
 
         {split && (
-          <div className="border-t border-border px-4 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] space-y-3 bg-surface sm:px-6">
-            <p className="text-xs text-muted-foreground">
-              The farm and the bakery are separate kitchens, so your basket goes out as two WhatsApp messages. Nothing
-              is charged on the website.
-            </p>
-            {groups.map((group) => (
-              <div key={group.seller} className="flex items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-medium">{group.seller === "farm" ? "Farm order" : "Bakery order"}</p>
-                  <p className="text-xs tabular-nums text-muted-foreground">
+          <div className="shrink-0 space-y-3 border-t border-border bg-surface px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 sm:px-6 sm:pb-[max(1.25rem,env(safe-area-inset-bottom))]">
+            <div className="space-y-1.5">
+              {groups.map((group) => (
+                <div key={group.seller} className="flex items-baseline justify-between gap-3 text-sm">
+                  <span className="truncate text-muted-foreground">
+                    {group.seller === "farm" ? "Farm" : "Bakery"} · {group.lines.reduce((n, l) => n + l.quantity, 0)} item
+                    {group.lines.reduce((n, l) => n + l.quantity, 0) === 1 ? "" : "s"}
+                  </span>
+                  <span className="shrink-0 font-medium tabular-nums">
                     {formatAmount(group.total, group.currency)}
-                    {group.hasUnpriced && " + items on request"}
-                  </p>
+                    {group.hasUnpriced && <span className="font-normal text-muted-foreground"> +</span>}
+                  </span>
                 </div>
-                <a
-                  href={group.sendAllLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => trackSend(group)}
-                  className={cn(buttonVariants(), sendButton, "h-11 shrink-0 px-4 text-sm")}
-                >
-                  <WhatsAppLogo className="h-4 w-4 shrink-0" />
-                  {group.seller === "farm" ? "Send to the farm" : "Send to Nitara"}
-                </a>
-              </div>
-            ))}
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Farm and bakery are separate kitchens, so WhatsApp opens a chat for each. Nothing is charged on the website.
+            </p>
+
+            {pending ? (
+              <button
+                type="button"
+                onClick={sendPending}
+                className={cn(buttonVariants(), sendButton, "h-auto min-h-[48px] w-full px-4 py-3 text-sm sm:min-h-[52px] sm:text-base")}
+              >
+                <WhatsAppLogo className="h-5 w-5 shrink-0" />
+                Send {pending.seller === "farm" ? "farm" : "bakery"} order to {kitchenLabel(pending.seller)}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={sendAllGroups}
+                className={cn(buttonVariants(), sendButton, "h-auto min-h-[48px] w-full px-4 py-3 text-sm sm:min-h-[52px] sm:text-base")}
+              >
+                <WhatsAppLogo className="h-5 w-5 shrink-0" />
+                Enquire both on WhatsApp
+              </button>
+            )}
+
+            {!pending && (
+              <p className="text-center text-[11px] text-muted-foreground">
+                One tap starts both chats. On phones, send the first message, then tap once more for the second kitchen.
+              </p>
+            )}
           </div>
         )}
       </SheetContent>
