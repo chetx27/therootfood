@@ -7,37 +7,6 @@ export function buildWhatsAppLink(message: string, number: string = WHATSAPP_NUM
   return `https://wa.me/${number}?text=${encoded}`;
 }
 
-/**
- * Opens one or more WhatsApp chats from a single user gesture.
- * Desktop usually opens every link; mobile WhatsApp often only keeps the first,
- * so any chats that did not open are returned for a follow-up tap.
- */
-export function openWhatsAppLinks(links: string[]): string[] {
-  const unique = [...new Set(links.filter(Boolean))];
-  if (unique.length === 0) return [];
-
-  const blocked: string[] = [];
-  for (let i = 0; i < unique.length; i++) {
-    const win = window.open(unique[i], "_blank", "noopener,noreferrer");
-    // Mobile browsers / WhatsApp deep-links often return null even when the first
-    // chat opened, so only treat later links as blocked when the window is null.
-    if (!win && i > 0) blocked.push(unique[i]);
-  }
-
-  // Touch devices rarely allow a second WhatsApp open in one gesture, even when
-  // `window.open` looks successful. Queue the rest for a one-tap follow-up.
-  if (
-    unique.length > 1 &&
-    blocked.length === 0 &&
-    typeof window.matchMedia === "function" &&
-    window.matchMedia("(pointer: coarse)").matches
-  ) {
-    return unique.slice(1);
-  }
-
-  return blocked;
-}
-
 export function bakeryItemMessage(item: string, option?: string): string {
   return [
     "Hi Nitara's Fine Bakes!",

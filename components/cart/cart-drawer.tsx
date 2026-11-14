@@ -15,13 +15,33 @@ import { formatAmount, formatInr, formatMoney, INR, lineTotal, type CurrencyOpti
 import { useCurrency } from "@/lib/use-currency";
 import { bakery } from "@/lib/bakery-menu";
 import { getBakeryItem } from "@/lib/bakery-basket";
-import {
-  bakeryBasketMessage,
-  basketEnquiryMessage,
-  buildWhatsAppLink,
-  openWhatsAppLinks,
-  singleItemEnquiryMessage,
-} from "@/lib/whatsapp";
+import { bakeryBasketMessage, basketEnquiryMessage, buildWhatsAppLink } from "@/lib/whatsapp";
+
+const PENDING_WHATSAPP_KEY = "therootfood-basket-whatsapp";
+
+function queueRemainingWhatsApp(urls: string[]) {
+  sessionStorage.setItem(PENDING_WHATSAPP_KEY, JSON.stringify({ urls, startedAt: Date.now() }));
+}
+
+function consumeNextWhatsApp(): string | null {
+  try {
+    const raw = sessionStorage.getItem(PENDING_WHATSAPP_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw) as { urls?: unknown; startedAt?: unknown };
+    const fresh = typeof data.startedAt === "number" && Date.now() - data.startedAt < 5 * 60 * 1000;
+    const urls = Array.isArray(data.urls) ? data.urls.filter((url): url is string => typeof url === "string" && url.length > 0) : [];
+    if (!fresh || urls.length === 0) {
+      sessionStorage.removeItem(PENDING_WHATSAPP_KEY);
+      return null;
+    }
+    const [next, ...rest] = urls;
+    if (rest.length === 0) sessionStorage.removeItem(PENDING_WHATSAPP_KEY);
+    else sessionStorage.setItem(PENDING_WHATSAPP_KEY, JSON.stringify({ urls: rest, startedAt: data.startedAt }));
+    return next;
+  } catch {
+    return null;
+  }
+}
 
 type Seller = "farm" | "bakery";
 
@@ -111,12 +131,6 @@ function bakeryEnquiryLine(line: Line) {
   return { name: line.name, option: line.detail ?? line.note, quantity: line.quantity, price: line.price ?? 0 };
 }
 
-function singleLink(line: Line, currency: CurrencyOption): string {
-  return line.seller === "bakery"
-    ? buildWhatsAppLink(bakeryBasketMessage([bakeryEnquiryLine(line)]), bakery.whatsapp)
-    : buildWhatsAppLink(singleItemEnquiryMessage(farmEnquiryLine(line), currency));
-}
-
 function buildGroup(seller: Seller, lines: Line[], shopperCurrency: CurrencyOption): Group {
   const currency = seller === "farm" ? shopperCurrency : INR;
   const priced = lines.filter((l) => l.price != null);
@@ -147,10 +161,6 @@ function paymentNote(group: Group): string {
     : "Nothing is charged on the website. We confirm stock, the delivery charge and the final amount on WhatsApp, and then you pay by UPI, bank transfer or cash on delivery.";
 }
 
-function kitchenLabel(seller: Seller): string {
-  return seller === "farm" ? "the farm" : "Nitara";
-}
-
 const sendButton =
   "whitespace-normal rounded-full bg-[#25D366] text-center text-white hover:bg-[#1ebe5b] gap-2 shadow-[0_10px_25px_-10px_rgba(37,211,102,0.8)]";
 
@@ -159,8 +169,8 @@ export function CartDrawer() {
   const { currency } = useCurrency();
   const track = useAnalytics();
   const isPhone = useIsPhone();
-  const [pendingLinks, setPendingLinks] = useState<{ link: string; seller: Seller }[]>([]);
-  const pendingNudgeSent = useRef(false);
+  const [sending, setSending] = useState(false);
+  const skipReturn = useRef(false);
 
   const lines = items.map((item) => toLine(item.productId, item.quantity)).filter((l): l is Line => !!l);
   const groups = (["farm", "bakery"] as const)
@@ -171,34 +181,42 @@ export function CartDrawer() {
   const split = groups.length > 1;
   const only = split ? undefined : groups[0];
   const farmAbroad = currency.code !== "INR" && groups.some((g) => g.seller === "farm");
-  const pending = pendingLinks[0];
 
   function handleOpenChange(open: boolean) {
-    if (!open) {
-      setPendingLinks([]);
-      pendingNudgeSent.current = false;
-    }
     setIsOpen(open);
   }
 
-  // When the shopper returns from the first WhatsApp chat, nudge the second kitchen.
+  // After the first kitchen's chat, open the next one without another basket button.
   useEffect(() => {
-    if (!pending) {
-      pendingNudgeSent.current = false;
-      return;
+    let hiddenAt = 0;
+    function resume() {
+      if (skipReturn.current) return;
+      const url = consumeNextWhatsApp();
+      if (url) window.location.assign(url);
     }
-    const seller = pending.seller;
-    function onVisible() {
-      if (document.visibilityState !== "visible" || pendingNudgeSent.current) return;
-      pendingNudgeSent.current = true;
-      toast.message(`Still need to send your order to ${kitchenLabel(seller)}`, {
-        description: "Tap the green button in your basket — one more chat, then you’re done.",
-        duration: 6000,
-      });
+    function onVisibility() {
+      if (document.visibilityState === "hidden") {
+        hiddenAt = Date.now();
+        skipReturn.current = false;
+        return;
+      }
+      // Ignore the brief hide when the phone shows the app chooser.
+      if (hiddenAt === 0 || Date.now() - hiddenAt < 1500) return;
+      hiddenAt = 0;
+      resume();
     }
-    document.addEventListener("visibilitychange", onVisible);
-    return () => document.removeEventListener("visibilitychange", onVisible);
-  }, [pending]);
+    function onPageShow(event: PageTransitionEvent) {
+      if (!event.persisted || skipReturn.current) return;
+      resume();
+    }
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("pageshow", onPageShow);
+    resume();
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("pageshow", onPageShow);
+    };
+  }, []);
 
   function trackSend(group: Group) {
     track("whatsapp_enquiry_sent", {
@@ -209,36 +227,42 @@ export function CartDrawer() {
     });
   }
 
-  function sendAllGroups() {
+  async function sendBothKitchens() {
+    setSending(true);
     groups.forEach(trackSend);
-    const blocked = openWhatsAppLinks(groups.map((g) => g.sendAllLink));
-    if (blocked.length === 0) {
-      setPendingLinks([]);
-      return;
+    try {
+      const res = await fetch("/api/basket-enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currency: currency.code,
+          items: lines.map((line) => ({ productId: line.id, quantity: line.quantity })),
+        }),
+      });
+      const data = (await res.json()) as {
+        success?: boolean;
+        error?: string;
+        deliveries?: { seller: Seller; url: string }[];
+      };
+      if (!res.ok || !data.deliveries?.length) {
+        throw new Error(data.error || "Could not start the WhatsApp chats.");
+      }
+      const [first, ...rest] = data.deliveries;
+      if (rest.length > 0) {
+        queueRemainingWhatsApp(rest.map((delivery) => delivery.url));
+        skipReturn.current = true;
+      }
+      window.location.assign(first.url);
+    } catch (error) {
+      setSending(false);
+      toast.error(error instanceof Error ? error.message : "Could not start the WhatsApp chats.");
     }
-    const queued = blocked
-      .map((link) => groups.find((g) => g.sendAllLink === link))
-      .filter((g): g is Group => !!g)
-      .map((g) => ({ link: g.sendAllLink, seller: g.seller }));
-    setPendingLinks(queued);
-    toast.message("Opening both kitchens", {
-      description: `WhatsApp opened for ${kitchenLabel(groups[0].seller)}. Come back and tap once for ${kitchenLabel(queued[0].seller)}.`,
-      duration: 5000,
-    });
-  }
-
-  function sendPending() {
-    if (!pending) return;
-    const group = groups.find((g) => g.seller === pending.seller);
-    if (group) trackSend(group);
-    openWhatsAppLinks([pending.link]);
-    setPendingLinks((prev) => prev.slice(1));
   }
 
   function description(): string {
     if (totalItems === 0) return "Nothing here yet.";
     const count = `${totalItems} item${totalItems > 1 ? "s" : ""}`;
-    if (split) return `${count} from two kitchens. One tap sends a WhatsApp to each.`;
+    if (split) return `${count} from two kitchens. One tap sends each kitchen its own order.`;
     if (only?.seller === "bakery") return `${count}. Nitara confirms everything with you on WhatsApp.`;
     return `${count}${farmAbroad ? `, priced in ${currency.code}` : ""}. We confirm everything with you on WhatsApp.`;
   }
@@ -314,7 +338,7 @@ export function CartDrawer() {
                       const priced = line.price != null;
                       return (
                         <li key={line.id} className="flex gap-3">
-                          {line.image && (
+                          {line.seller === "farm" && line.image && (
                             <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-border/50 bg-muted/40 sm:h-20 sm:w-20">
                               <Image src={line.image} alt={line.imageAlt} fill className="object-cover" sizes="80px" />
                             </div>
@@ -355,18 +379,6 @@ export function CartDrawer() {
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
-                              <a
-                                href={singleLink(line, group.currency)}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={() =>
-                                  track("whatsapp_enquiry_sent", { mode: "single", seller: line.seller, product: line.ref })
-                                }
-                                className="inline-flex items-center gap-1 rounded-full border border-forest/25 px-2.5 py-1 text-xs font-medium text-forest transition-colors hover:bg-forest hover:text-white"
-                              >
-                                <WhatsAppLogo className="h-3.5 w-3.5" />
-                                Ask separately
-                              </a>
                             </div>
                           </div>
                           {priced && (
@@ -425,11 +437,6 @@ export function CartDrawer() {
                 "Enquire on WhatsApp"
               )}
             </a>
-            {only.lines.length > 1 && (
-              <p className="text-center text-[11px] text-muted-foreground">
-                Prefer to ask one at a time? Tap &ldquo;Ask separately&rdquo; on any item.
-              </p>
-            )}
           </div>
         )}
 
@@ -450,34 +457,20 @@ export function CartDrawer() {
               ))}
             </div>
             <p className="text-xs text-muted-foreground">
-              Farm and bakery are separate kitchens, so WhatsApp opens a chat for each. Nothing is charged on the website.
+              One tap. The farm gets the farm order and Nitara gets the bakery order. Nothing is charged on the website.
             </p>
-
-            {pending ? (
-              <button
-                type="button"
-                onClick={sendPending}
-                className={cn(buttonVariants(), sendButton, "h-auto min-h-[48px] w-full px-4 py-3 text-sm sm:min-h-[52px] sm:text-base")}
-              >
-                <WhatsAppLogo className="h-5 w-5 shrink-0" />
-                Send {pending.seller === "farm" ? "farm" : "bakery"} order to {kitchenLabel(pending.seller)}
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={sendAllGroups}
-                className={cn(buttonVariants(), sendButton, "h-auto min-h-[48px] w-full px-4 py-3 text-sm sm:min-h-[52px] sm:text-base")}
-              >
-                <WhatsAppLogo className="h-5 w-5 shrink-0" />
-                Enquire both on WhatsApp
-              </button>
-            )}
-
-            {!pending && (
-              <p className="text-center text-[11px] text-muted-foreground">
-                One tap starts both chats. On phones, send the first message, then tap once more for the second kitchen.
-              </p>
-            )}
+            <button
+              type="button"
+              onClick={sendBothKitchens}
+              disabled={sending}
+              className={cn(buttonVariants(), sendButton, "h-auto min-h-[48px] w-full px-4 py-3 text-sm disabled:opacity-70 sm:min-h-[52px] sm:text-base")}
+            >
+              <WhatsAppLogo className="h-5 w-5 shrink-0" />
+              {sending ? "Opening WhatsApp…" : "Send both orders"}
+            </button>
+            <p className="text-center text-[11px] text-muted-foreground">
+              WhatsApp opens the farm chat first. Nitara&apos;s chat opens on its own when you come back.
+            </p>
           </div>
         )}
       </SheetContent>

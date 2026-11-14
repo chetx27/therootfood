@@ -1,7 +1,6 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
   buildWhatsAppLink,
-  openWhatsAppLinks,
   productEnquiryMessage,
   basketEnquiryMessage,
   bakeryBasketMessage,
@@ -22,77 +21,6 @@ describe("buildWhatsAppLink", () => {
     const link = buildWhatsAppLink("  hello  ");
     expect(link).toContain(encodeURIComponent("hello"));
     expect(link).not.toContain(encodeURIComponent("  hello  "));
-  });
-});
-
-describe("openWhatsAppLinks", () => {
-  function stubMatchMedia(matches: (query: string) => boolean): typeof window.matchMedia {
-    return ((query: string) =>
-      ({
-        matches: matches(query),
-        media: query,
-        onchange: null,
-        addListener: () => undefined,
-        removeListener: () => undefined,
-        addEventListener: () => undefined,
-        removeEventListener: () => undefined,
-        dispatchEvent: () => false,
-      })) as unknown as typeof window.matchMedia;
-  }
-
-  function withWindow(partial: { open: typeof window.open; matchMedia?: typeof window.matchMedia }, run: () => void) {
-    const previous = globalThis.window;
-    // Vitest runs in node — stub just enough of `window` for this helper.
-    Object.defineProperty(globalThis, "window", {
-      configurable: true,
-      writable: true,
-      value: {
-        open: partial.open,
-        matchMedia: partial.matchMedia ?? stubMatchMedia(() => false),
-      },
-    });
-    try {
-      run();
-    } finally {
-      if (previous === undefined) {
-        Reflect.deleteProperty(globalThis, "window");
-      } else {
-        Object.defineProperty(globalThis, "window", {
-          configurable: true,
-          writable: true,
-          value: previous,
-        });
-      }
-    }
-  }
-
-  it("opens a single link and reports nothing blocked", () => {
-    const open = vi.fn(() => ({}) as Window);
-    withWindow({ open }, () => {
-      expect(openWhatsAppLinks(["https://wa.me/1"])).toEqual([]);
-      expect(open).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  it("queues later chats when the browser blocks them", () => {
-    const open = vi.fn((url: string | URL | undefined) => (String(url).includes("/1") ? ({} as Window) : null));
-    withWindow({ open }, () => {
-      expect(openWhatsAppLinks(["https://wa.me/1", "https://wa.me/2"])).toEqual(["https://wa.me/2"]);
-      expect(open).toHaveBeenCalledTimes(2);
-    });
-  });
-
-  it("queues remaining chats on coarse pointers even if open looks successful", () => {
-    const open = vi.fn(() => ({}) as Window);
-    withWindow(
-      {
-        open,
-        matchMedia: stubMatchMedia((query) => query.includes("pointer: coarse")),
-      },
-      () => {
-        expect(openWhatsAppLinks(["https://wa.me/1", "https://wa.me/2"])).toEqual(["https://wa.me/2"]);
-      }
-    );
   });
 });
 
