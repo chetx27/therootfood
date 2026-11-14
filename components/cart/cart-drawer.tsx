@@ -3,9 +3,8 @@
 import { WhatsAppLogo } from "@/components/ui/whatsapp-logo";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import { Minus, Plus, ShoppingBasket, Trash2 } from "lucide-react";
-import { toast } from "sonner";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -169,7 +168,6 @@ export function CartDrawer() {
   const { currency } = useCurrency();
   const track = useAnalytics();
   const isPhone = useIsPhone();
-  const [sending, setSending] = useState(false);
   const skipReturn = useRef(false);
 
   const lines = items.map((item) => toLine(item.productId, item.quantity)).filter((l): l is Line => !!l);
@@ -227,36 +225,12 @@ export function CartDrawer() {
     });
   }
 
-  async function sendBothKitchens() {
-    setSending(true);
+  function queueTheOtherKitchen() {
     groups.forEach(trackSend);
-    try {
-      const res = await fetch("/api/basket-enquiry", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          currency: currency.code,
-          items: lines.map((line) => ({ productId: line.id, quantity: line.quantity })),
-        }),
-      });
-      const data = (await res.json()) as {
-        success?: boolean;
-        error?: string;
-        deliveries?: { seller: Seller; url: string }[];
-      };
-      if (!res.ok || !data.deliveries?.length) {
-        throw new Error(data.error || "Could not start the WhatsApp chats.");
-      }
-      const [first, ...rest] = data.deliveries;
-      if (rest.length > 0) {
-        queueRemainingWhatsApp(rest.map((delivery) => delivery.url));
-        skipReturn.current = true;
-      }
-      window.location.assign(first.url);
-    } catch (error) {
-      setSending(false);
-      toast.error(error instanceof Error ? error.message : "Could not start the WhatsApp chats.");
-    }
+    const rest = groups.slice(1);
+    if (rest.length === 0) return;
+    queueRemainingWhatsApp(rest.map((group) => group.sendAllLink));
+    skipReturn.current = true;
   }
 
   function description(): string {
@@ -459,15 +433,14 @@ export function CartDrawer() {
             <p className="text-xs text-muted-foreground">
               One tap. The farm gets the farm order and Nitara gets the bakery order. Nothing is charged on the website.
             </p>
-            <button
-              type="button"
-              onClick={sendBothKitchens}
-              disabled={sending}
-              className={cn(buttonVariants(), sendButton, "h-auto min-h-[48px] w-full px-4 py-3 text-sm disabled:opacity-70 sm:min-h-[52px] sm:text-base")}
+            <a
+              href={groups[0].sendAllLink}
+              onClick={queueTheOtherKitchen}
+              className={cn(buttonVariants(), sendButton, "h-auto min-h-[48px] w-full px-4 py-3 text-sm sm:min-h-[52px] sm:text-base")}
             >
               <WhatsAppLogo className="h-5 w-5 shrink-0" />
-              {sending ? "Opening WhatsApp…" : "Send both orders"}
-            </button>
+              Send both orders
+            </a>
             <p className="text-center text-[11px] text-muted-foreground">
               WhatsApp opens the farm chat first. Nitara&apos;s chat opens on its own when you come back.
             </p>
