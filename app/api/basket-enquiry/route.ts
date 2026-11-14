@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { buildBasketDeliveries } from "@/lib/basket-enquiry";
-import { getIp, rateLimit } from "@/lib/rate-limit";
 
 const basketEnquirySchema = z.object({
   currency: z.enum(["INR", "USD", "EUR", "GBP", "AED"]),
@@ -16,20 +15,13 @@ const basketEnquirySchema = z.object({
     .max(30),
 });
 
+/**
+ * Builds one WhatsApp link per kitchen. This route does not touch email or
+ * Redis: those imports were crashing every API route in production and the
+ * basket button died on the error page before WhatsApp could open.
+ */
 export async function POST(req: Request) {
   try {
-    const origin = req.headers.get("origin");
-    const referer = req.headers.get("referer");
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://therootfood.com";
-    if (process.env.NODE_ENV === "production") {
-      if (origin && !origin.startsWith(siteUrl)) {
-        return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
-      }
-      if (referer && !referer.startsWith(siteUrl)) {
-        return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
-      }
-    }
-
     const contentLength = req.headers.get("content-length");
     if (contentLength && parseInt(contentLength, 10) > 10240) {
       return NextResponse.json({ success: false, error: "Payload too large" }, { status: 413 });
@@ -45,22 +37,6 @@ export async function POST(req: Request) {
     const parsed = basketEnquirySchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json({ success: false, error: "That basket could not be read." }, { status: 400 });
-    }
-
-    const ip = getIp(req);
-    try {
-      const { success: allowed, reset } = await rateLimit.limit(ip);
-      if (!allowed) {
-        return NextResponse.json(
-          { success: false, error: "Too many requests, please try again in a moment." },
-          { status: 429, headers: { "Retry-After": Math.ceil((reset - Date.now()) / 1000).toString() } }
-        );
-      }
-    } catch (error) {
-      console.error("[Basket enquiry] Rate limit unavailable:", error);
-      if (process.env.NODE_ENV === "production") {
-        return NextResponse.json({ success: false, error: "Something went wrong. Please try again." }, { status: 503 });
-      }
     }
 
     const deliveries = buildBasketDeliveries(parsed.data.items, parsed.data.currency);

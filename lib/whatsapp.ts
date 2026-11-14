@@ -3,8 +3,9 @@ import { formatAmount, formatInr, lineTotal, type CurrencyOption } from "@/lib/c
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "917483877595";
 
 export function buildWhatsAppLink(message: string, number: string = WHATSAPP_NUMBER): string {
+  const digits = number.replace(/\D/g, "");
   const encoded = encodeURIComponent(message.trim());
-  return `https://wa.me/${number}?text=${encoded}`;
+  return `https://wa.me/${digits}?text=${encoded}`;
 }
 
 export function bakeryItemMessage(item: string, option?: string): string {

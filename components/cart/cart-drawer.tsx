@@ -209,7 +209,6 @@ export function CartDrawer() {
     }
     document.addEventListener("visibilitychange", onVisibility);
     window.addEventListener("pageshow", onPageShow);
-    resume();
     return () => {
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("pageshow", onPageShow);
@@ -225,11 +224,16 @@ export function CartDrawer() {
     });
   }
 
-  function queueTheOtherKitchen() {
+  const farmGroup = groups.find((group) => group.seller === "farm");
+  const bakeryGroup = groups.find((group) => group.seller === "bakery");
+
+  function openNitaraAsWell() {
     groups.forEach(trackSend);
-    const rest = groups.slice(1);
-    if (rest.length === 0) return;
-    queueRemainingWhatsApp(rest.map((group) => group.sendAllLink));
+    if (!bakeryGroup) return;
+    // Same tap as the farm link. A phone often keeps only the first WhatsApp chat.
+    const popup = window.open(bakeryGroup.sendAllLink, "_blank", "noopener,noreferrer");
+    if (popup) return;
+    queueRemainingWhatsApp([bakeryGroup.sendAllLink]);
     skipReturn.current = true;
   }
 
@@ -433,14 +437,18 @@ export function CartDrawer() {
             <p className="text-xs text-muted-foreground">
               One tap. The farm gets the farm order and Nitara gets the bakery order. Nothing is charged on the website.
             </p>
+            {farmGroup && (
             <a
-              href={groups[0].sendAllLink}
-              onClick={queueTheOtherKitchen}
+              href={farmGroup.sendAllLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={openNitaraAsWell}
               className={cn(buttonVariants(), sendButton, "h-auto min-h-[48px] w-full px-4 py-3 text-sm sm:min-h-[52px] sm:text-base")}
             >
               <WhatsAppLogo className="h-5 w-5 shrink-0" />
               Send both orders
             </a>
+            )}
             <p className="text-center text-[11px] text-muted-foreground">
               WhatsApp opens the farm chat first. Nitara&apos;s chat opens on its own when you come back.
             </p>

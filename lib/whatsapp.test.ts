@@ -22,6 +22,10 @@ describe("buildWhatsAppLink", () => {
     expect(link).toContain(encodeURIComponent("hello"));
     expect(link).not.toContain(encodeURIComponent("  hello  "));
   });
+
+  it("keeps only digits in the phone number", () => {
+    expect(buildWhatsAppLink("Hi", "+91 74838 77595")).toMatch(/^https:\/\/wa\.me\/917483877595\?text=/);
+  });
 });
 
 describe("message builders", () => {
