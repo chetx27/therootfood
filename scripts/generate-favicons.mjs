@@ -58,6 +58,8 @@ async function generate() {
   const targets = [
     { file: "app/icon.png", size: 512 },
     { file: "public/icon-512.png", size: 512 },
+    { file: "public/icon-192.png", size: 192 },
+    { file: "public/favicon-48x48.png", size: 48, padding: 0.08 },
     { file: "public/favicon-32x32.png", size: 32, padding: 0.04 },
     { file: "public/favicon-16x16.png", size: 16, padding: 0.02 },
     { file: "public/apple-touch-icon.png", size: 180, radius: 0 },
