@@ -32,7 +32,7 @@ interface MenuLink {
 const shopLinks: MenuLink[] = [
   { href: "/", label: "Home", hint: "Back to the start", icon: Home },
   { href: "/cakes", label: "Cakes & Bakes", hint: "Nitara's Fine Bakes menu", icon: Cake },
-  { href: "/order", label: "Order Products", hint: "Flours, eggs, meat & more", icon: ShoppingBasket },
+  { href: "/order", label: "Farm", hint: "Flours, eggs, meat & more", icon: ShoppingBasket },
   { href: "/#bulk", label: "Bulk Orders", hint: "For cafés, shops & kitchens", icon: Truck },
 ];
 

@@ -14,7 +14,7 @@ import { BrandMark } from "@/components/ui/brand-mark";
 const primaryLinks = [
   { href: "/", label: "Home" },
   { href: "/cakes", label: "Cakes & Bakes" },
-  { href: "/order", label: "Order" },
+  { href: "/order", label: "Farm" },
   { href: "/faq", label: "FAQ" },
   { href: "/contact", label: "Contact" },
 ];
